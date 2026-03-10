@@ -259,7 +259,7 @@ const fs = {
             "- Demonstratie/onderzoek naar DoS (Denial-of-Service) binnen een gecontroleerde omgeving.",
             "",
             "YouTube:",
-            "- (plak hier je link)",
+            "- https://youtu.be/0zw26tSzFls",
           ],
         },
         "mitm-attack.txt": {
@@ -271,7 +271,7 @@ const fs = {
             "- Demonstratie van een MITM-aanval in een lab omgeving en hoe je dit detecteert/mitigeert.",
             "",
             "YouTube:",
-            "- (plak hier je link)",
+            "- https://youtu.be/Q5j742jkTKk",
           ],
         },
         "honeypot.txt": {
@@ -283,7 +283,7 @@ const fs = {
             "- Opzetten van een honeypot om aanvallen te observeren en logdata te verzamelen.",
             "",
             "YouTube:",
-            "- (plak hier je link)",
+            "- https://youtu.be/SdyMWyrWGLI",
           ],
         },
         "dns-spoofing.txt": {
@@ -295,7 +295,7 @@ const fs = {
             "- Demonstratie van DNS spoofing en het effect op verkeer binnen een lab omgeving.",
             "",
             "YouTube:",
-            "- (plak hier je link)",
+            "- https://youtu.be/SgbNDNdCYZ4",
           ],
         },
       },
