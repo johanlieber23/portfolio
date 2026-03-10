@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Lenny Portfolio</title>
+    <meta
+      name="description"
+      content="A terminal-style portfolio for a cybersecurity student."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell" aria-label="Terminal portfolio">
+      <header class="shell__topbar" aria-hidden="true">
+        <span class="dot dot--red"></span>
+        <span class="dot dot--yellow"></span>
+        <span class="dot dot--green"></span>
+        <span class="shell__title">lenny-portfolio — terminal</span>
+      </header>
+
+      <section class="shell__screen" id="screen" role="region" aria-live="polite">
+        <div class="output" id="output"></div>
+
+        <form class="input" id="inputForm" autocomplete="off">
+          <span class="prompt" id="prompt" aria-hidden="true">guest@lenny-portfolio:~$</span>
+          <label class="sr-only" for="commandInput">Command</label>
+          <input
+            id="commandInput"
+            class="input__field"
+            type="text"
+            inputmode="text"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            autofocus
+          />
+        </form>
+      </section>
+
+      <footer class="shell__hint" aria-hidden="true">
+        Try: <span class="kbd">help</span>, <span class="kbd">ls</span>,
+        <span class="kbd">cd about</span>, <span class="kbd">cat about/about.txt</span>,
+        <span class="kbd">projects</span>
+      </footer>
+    </main>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
+
