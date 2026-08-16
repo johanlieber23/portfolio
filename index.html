@@ -3,34 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <title>Lenny Portfolio</title>
+    <meta name="color-scheme" content="light dark" />
+    <title>Lenny Bos</title>
     <meta
       name="description"
-      content="A terminal-style portfolio for a cybersecurity student."
+      content="Portfolio of Lenny Bos — Cyber Security student and software developer."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
-  <body>
+  <body class="page-terminal">
+    <div class="page-actions">
+      <a class="page-switch" href="./portfolio.html">Classic view</a>
+      <button class="theme-toggle" type="button" aria-label="Donkere modus inschakelen" aria-pressed="false">
+        <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle__icon" aria-hidden="true">☾</span>
+      </button>
+    </div>
+
     <main class="shell" aria-label="Terminal portfolio">
       <header class="shell__topbar" aria-hidden="true">
         <span class="dot dot--red"></span>
         <span class="dot dot--yellow"></span>
         <span class="dot dot--green"></span>
-        <span class="shell__title">lenny-portfolio — terminal</span>
+        <span class="shell__title">lenny.bos — terminal</span>
       </header>
 
       <section class="shell__screen" id="screen" role="region" aria-live="polite">
         <div class="output" id="output"></div>
 
-        <form class="input" id="inputForm" autocomplete="off">
-          <span class="prompt" id="prompt" aria-hidden="true">guest@lenny-portfolio:~$</span>
+        <form class="input input--booting" id="inputForm" autocomplete="off">
+          <span class="prompt" id="prompt" aria-hidden="true">guest@lenny.bos:~$</span>
           <label class="sr-only" for="commandInput">Command</label>
           <input
             id="commandInput"
@@ -40,19 +48,18 @@
             spellcheck="false"
             autocapitalize="off"
             autocomplete="off"
-            autofocus
+            disabled
           />
         </form>
       </section>
 
       <footer class="shell__hint" aria-hidden="true">
-        Try: <span class="kbd">help</span>, <span class="kbd">ls</span>,
-        <span class="kbd">cd about</span>, <span class="kbd">cat about/about.txt</span>,
+        Start met <span class="kbd">help</span>, <span class="kbd">about</span> of
         <span class="kbd">projects</span>
       </footer>
     </main>
 
+    <script src="./theme.js" defer></script>
     <script src="./app.js" defer></script>
   </body>
 </html>
-

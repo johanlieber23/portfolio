@@ -7,8 +7,9 @@ const screenEl = document.getElementById("screen");
 const state = {
   user: "guest",
   hasName: false,
-  host: "lenny-portfolio",
+  host: "lenny.bos",
   cwd: ["~"],
+  booting: true,
 };
 
 function escapeHtml(text) {
@@ -53,6 +54,31 @@ function printLine(text, variant) {
   scrollToBottom();
 }
 
+async function typeLine(text, variant, delayMs = 28) {
+  const div = document.createElement("div");
+  div.className = variant ? `line line--${variant}` : "line";
+  outputEl.appendChild(div);
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    div.textContent = text;
+    scrollToBottom();
+    return;
+  }
+
+  for (const character of text) {
+    div.textContent += character;
+    scrollToBottom();
+    await sleep(delayMs);
+  }
+}
+
+function highlightClassicView() {
+  const classicViewLink = document.querySelector(".page-switch");
+  if (!classicViewLink) return;
+  classicViewLink.classList.add("page-switch--attention");
+  window.setTimeout(() => classicViewLink.classList.remove("page-switch--attention"), 8000);
+}
+
 function printBlank() {
   printLine(" ", "muted");
 }
@@ -78,30 +104,22 @@ function normalizeName(input) {
 const content = {
   banner() {
     return [
-      "┌──────────────────────────────────────────────┐",
-      "│               LENNY PORTFOLIO                │",
-      "└──────────────────────────────────────────────┘",
-      "Type your name to begin.",
-      "Hint: after that, type 'help' for commands.",
+      "Lenny Bos",
+      "Cyber Security  ·  Software Development",
+      "",
+      "Enter your name to begin.",
+      "Type help for available commands.",
     ];
   },
   help() {
     return [
-      "Commands (filesystem-style):",
-      "  pwd                 - show current directory",
-      "  ls [path]            - list directory (default: current)",
-      "  cd <path>            - change directory",
-      "  cat <file>           - read a file",
-      "  tree                 - show directory tree",
-      "  clear | cls          - clear the screen",
+      "Explore:",
+      "  about       over mij",
+      "  projects    mijn werk",
+      "  contact     contactgegevens",
+      "  socials     profielen en links",
       "",
-      "Shortcuts:",
-      "  about | whoami       - show about (same as: cat about/over-mij.txt)",
-      "  projects             - list projects (same as: ls projects)",
-      "  contact              - show contact (same as: cat contact/contact.txt)",
-      "  socials              - show links",
-      "",
-      "Tip: try 'cd cv' then 'ls' for work/education.",
+      "Terminal: ls, cd, cat, tree, pwd, clear",
     ];
   },
   about() {
@@ -186,7 +204,7 @@ const content = {
       "LINKS",
       "-----",
       "LinkedIn: https://www.linkedin.com/in/lennybos",
-      "TryHackMe: https://tryhackme.com/p/lennybos",
+      "TryHackMe: https://tryhackme.com/p/lb0z",
       "Hack The Box: https://ctf.hackthebox.com/user/profile/1011845",
     ];
   },
@@ -442,6 +460,7 @@ function applyCompletionToInput(before, completedToken, addSpace) {
 }
 
 function handleTabAutocomplete() {
+  if (state.booting) return;
   const value = inputEl.value;
   const trimmedLeft = value.replace(/^\s+/, "");
   const caretAtEnd = inputEl.selectionStart === value.length;
@@ -517,8 +536,8 @@ function handlePreName(input) {
   setNameMode(false);
 
   printBlank();
-  printLine(`Access granted. Welcome, ${state.user}.`, "accent");
-  printLine("Type 'help' to see commands.", "muted");
+  printLine(`Welcome, ${state.user}.`, "accent");
+  printLine("Type 'help' to explore.", "muted");
   printBlank();
 }
 
@@ -637,16 +656,180 @@ function runCommand(raw) {
   printLine("Type 'help' to see available commands.", "muted");
 }
 
-function boot() {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function bootStatus(label, totalWidth = 44) {
+  const suffix = " [ OK ]";
+  const dots = Math.max(4, totalWidth - label.length - suffix.length);
+  return `${label}${".".repeat(dots)}${suffix}`;
+}
+
+function kernelLine(seconds, message) {
+  const ts = seconds.toFixed(6).padStart(12, " ");
+  return `[${ts}] ${message}`;
+}
+
+async function printLinesFast(lines, delayMs) {
+  for (const { text, variant } of lines) {
+    printLine(text, variant);
+    await sleep(delayMs);
+  }
+}
+
+async function pauseThenClear(ms) {
+  await sleep(ms);
+  clearScreen();
+}
+
+async function runBootSequence() {
+  state.booting = true;
+  inputEl.disabled = true;
+  formEl.classList.add("input--booting");
+
+  // Phase 1 — firmware / POST
+  await printLinesFast(
+    [
+      { text: "LENNY-PORTFOLIO UEFI Firmware v2.14", variant: "muted" },
+      { text: "Copyright (c) 2026 Lenny Bos", variant: "muted" },
+      { text: "", variant: "muted" },
+      { text: "CPU: Virtual Core i7 @ 3.20GHz", variant: "muted" },
+      { text: "RAM: 8192 MB DDR4 — OK", variant: "ok" },
+      { text: "Storage: NVMe 512GB — detected", variant: "ok" },
+      { text: "Network: Intel I219-V — link up", variant: "ok" },
+      { text: "Booting from Hard Disk...", variant: "muted" },
+    ],
+    62,
+  );
+  await pauseThenClear(320);
+
+  // Phase 2 — kernel ring buffer
+  let t = 0;
+  const kernelBoot = [
+    kernelLine(t, "Linux version 6.8.0-portfolio (lenny@build)"),
+    kernelLine((t += 0.012341), "Command line: BOOT_IMAGE=/vmlinuz quiet splash"),
+    kernelLine((t += 0.028104), "x86/fpu: Supporting XSAVE feature 0x001"),
+    kernelLine((t += 0.041882), "ACPI: Core revision 20230331"),
+    kernelLine((t += 0.067441), "PCI: Using configuration type 1 for base access"),
+    kernelLine((t += 0.089102), "VFS: Disk quotas dquot_6.6.0"),
+    kernelLine((t += 0.112884), "Block layer SCSI generic (bsg) driver version 0.4"),
+    kernelLine((t += 0.145221), "TCP bind hash table entries: 65536"),
+    kernelLine((t += 0.178903), "NET: Registered PF_INET protocol family"),
+    kernelLine((t += 0.201447), "systemd[1]: systemd 255.4 running in system mode"),
+  ];
+
+  const modules = [
+    "ext4",
+    "nf_tables",
+    "kvm_intel",
+    "cfg80211",
+    "usbcore",
+    "ahci",
+    "i915",
+    "snd_hda_intel",
+    "tls",
+    "loop",
+    "squashfs",
+    "overlay",
+    "fuse",
+    "dm_mod",
+    "crc32c",
+  ];
+
+  for (const mod of modules) {
+    t += 0.018 + Math.random() * 0.022;
+    kernelBoot.push(kernelLine(t, `${mod}: module loaded`));
+  }
+
+  kernelBoot.push(
+    kernelLine((t += 0.044), "systemd[1]: Mounted root filesystem on /dev/nvme0n1p2"),
+    kernelLine((t += 0.031), "systemd[1]: Reached target Local File Systems"),
+  );
+
+  await printLinesFast(
+    kernelBoot.map((text) => ({ text, variant: "muted" })),
+    44,
+  );
+  await pauseThenClear(260);
+
+  // Phase 3 — systemd bringing up services
+  const units = [
+    "udev.service",
+    "systemd-journald.service",
+    "systemd-udevd.service",
+    "systemd-networkd.service",
+    "systemd-resolved.service",
+    "systemd-timesyncd.service",
+    "dbus.service",
+    "polkit.service",
+    "NetworkManager.service",
+    "cron.service",
+    "rsyslog.service",
+    "ssh.service",
+    "portfolio-fs.service",
+    "portfolio-auth.service",
+    "portfolio-shell.service",
+    "getty@tty1.service",
+    "multi-user.target",
+  ];
+
+  const systemdLines = [];
+  for (const unit of units) {
+    systemdLines.push({ text: `         Starting ${unit}...`, variant: "muted" });
+    systemdLines.push({ text: bootStatus(`Started ${unit}`, 52), variant: "ok" });
+  }
+
+  const binaries = [
+    "/sbin/init",
+    "/bin/bash",
+    "/lib/systemd/systemd",
+    "/usr/lib/portfolio/fs-driver.so",
+    "/usr/lib/portfolio/auth.so",
+    "/usr/bin/portfolio-core",
+    "/usr/lib/modules/6.8.0/netfilter.ko",
+    "/usr/lib/modules/6.8.0/nftables.ko",
+    "/etc/systemd/system/portfolio.service",
+    "/home/lenny/.profile",
+  ];
+
+  for (const path of binaries) {
+    systemdLines.push({ text: bootStatus(`Loading ${path}`), variant: "ok" });
+  }
+
+  await printLinesFast(systemdLines, 32);
+  await pauseThenClear(240);
+
+  // Phase 4 — final handoff (brief flash, then wipe)
+  await printLinesFast(
+    [
+      { text: kernelLine(4.812004, "systemd[1]: Reached target Graphical Interface"), variant: "muted" },
+      { text: bootStatus("Starting portfolio login service", 52), variant: "ok" },
+      { text: "System boot complete.", variant: "accent" },
+    ],
+    140,
+  );
+  await sleep(400);
+  clearScreen();
+}
+
+async function boot() {
   setNameMode(true);
-  printBlock(content.banner(), "accent");
+  await runBootSequence();
+  highlightClassicView();
+  await typeLine("Prefer the normal portfolio website?", "accent", 26);
+  await typeLine("Click 'Classic view' in the top-right corner.", "muted", 22);
   printBlank();
-  printLine("Enter name:", "muted");
+  printLine("Enter your name to begin.", "muted");
+  state.booting = false;
+  inputEl.disabled = false;
+  formEl.classList.remove("input--booting");
   inputEl.focus();
 }
 
 formEl.addEventListener("submit", (e) => {
   e.preventDefault();
+  if (state.booting) return;
   const raw = inputEl.value;
   inputEl.value = "";
 
@@ -670,7 +853,7 @@ inputEl.addEventListener("keydown", (e) => {
 });
 
 window.addEventListener("click", () => {
-  inputEl.focus();
+  if (!state.booting) inputEl.focus();
 });
 
 boot();
