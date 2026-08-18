@@ -14,10 +14,10 @@ let yodaWaveTimer = null;
 let yodaSpeechSequence = 0;
 
 const yodaImages = {
-  sleeping: "./sleeping-yoda.png",
-  idle: "./yodapixel.webp",
-  typing: "./yoda-looking-right.png",
-  waving: "./yoda-wave.png",
+  sleeping: "./media/sleeping-yoda.png",
+  idle: "./media/yodapixel.webp",
+  typing: "./media/yoda-looking-right.png",
+  waving: "./media/yoda-wave.png",
 };
 
 function setYodaImage(stateName) {
