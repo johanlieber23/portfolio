@@ -29,6 +29,15 @@ function setYodaTip(message, imageState = "idle") {
   yodaSpeechEl.textContent = message;
 }
 
+function isAtRoot() {
+  return state.cwd.length === 1 && state.cwd[0] === "~";
+}
+
+function guideBackToRoot(destination) {
+  printLine(`You are currently in ${displayPath(state.cwd)}. Type 'cd ..' before opening ${destination}.`, "error");
+  setYodaTip(`First type 'cd ..' to go back. Then you can open ${destination}.`);
+}
+
 function renderTalkingYoda() {
   if (yodaVideoEl.paused || yodaVideoEl.ended) return;
 
@@ -154,7 +163,7 @@ function printBlock(lines, variant) {
 function commandEcho(raw) {
   const cmd = raw.trim();
   if (!cmd) return;
-  printLine(`${promptEl.textContent} ${cmd}`, "muted");
+  printLine(`${promptEl.textContent} ${cmd}`, "command");
 }
 
 function normalizeName(input) {
@@ -178,24 +187,24 @@ const content = {
   help() {
     return [
       "Explore:",
-      "  about       over mij",
-      "  projects    mijn werk",
-      "  contact     contactgegevens",
-      "  socials     profielen en links",
+      "  about       learn about me",
+      "  projects    explore my work",
+      "  contact     contact details",
+      "  socials     profiles and links",
       "",
       "Terminal: ls, cd, cat, tree, pwd, clear",
     ];
   },
   about() {
     return [
-      "OVER MIJ",
+      "ABOUT ME",
       "-------",
-      "Ik ben Lenny Bos, een 20-jarige student aan de Hogeschool van Amsterdam, waar ik de Associate Degree voor Cyber Security volg.",
-      "Ik ben momenteel in mijn eerste jaar en ben gepassioneerd door alles wat met cybersecurity te maken heeft.",
+      "I am Lenny Bos, a 20-year-old student at the Amsterdam University of Applied Sciences, pursuing an Associate Degree in Cyber Security.",
+      "I am currently in my first year and passionate about everything related to cybersecurity.",
       "",
-      "Voor mijn studie heb ik een opleiding Software Development afgerond, wat me een solide technische achtergrond heeft gegeven.",
-      "Buiten mijn studie ben ik actief in verschillende sportieve activiteiten en besteed ik veel tijd aan het leren van nieuwe vaardigheden,",
-      "met name op het gebied van Cyber Security.",
+      "Before this degree, I completed a Software Development program, which gave me a solid technical foundation.",
+      "Outside my studies, I take part in various sports and spend a lot of time learning new skills,",
+      "particularly in the field of Cyber Security.",
     ];
   },
   projects() {
@@ -203,10 +212,10 @@ const content = {
       "PROJECTS",
       "--------",
       "Files in ~/projects:",
-      "  dos-attack.txt    - DoS aanval (met video)",
-      "  mitm-attack.txt   - Man-in-the-Middle aanval (met video)",
-      "  honeypot.txt      - Honeypot (met video)",
-      "  dns-spoofing.txt  - DNS spoofing (met video)",
+      "  dos-attack.txt    - DoS attack (with video)",
+      "  mitm-attack.txt   - Man-in-the-Middle attack (with video)",
+      "  honeypot.txt      - Honeypot (with video)",
+      "  dns-spoofing.txt  - DNS spoofing (with video)",
       "",
       "Tip: cat a file, e.g. 'cat projects/dos-attack.txt'",
     ];
@@ -257,7 +266,7 @@ const content = {
       "CONTACT",
       "-------",
       "Email: lenny.bos07@gmail.com",
-      "Locatie: Den Haag, NL",
+      "Location: The Hague, NL",
       "",
       "DM kan ook via LinkedIn:",
       "  https://www.linkedin.com/in/lennybos",
@@ -281,20 +290,20 @@ const fs = {
     about: {
       type: "dir",
       children: {
-        "over-mij.txt": { type: "file", lines: content.about() },
-        "vaardigheden.txt": {
+        "about-me.txt": { type: "file", lines: content.about() },
+        "skills.txt": {
           type: "file",
           lines: [
-            "VAARDIGHEDEN",
+            "SKILLS",
             "-----------",
             "Cyber Security:",
-            "- Actieve studie van netwerken, beveiliging en ethisch hacken.",
+            "- Actively studying networks, security, and ethical hacking.",
             "",
             "Software Development:",
-            "- Ervaring met webontwikkeling en het onderhouden van websites.",
+            "- Experience with web development and website maintenance.",
             "",
-            "Leergierigheid:",
-            "- Ik ben altijd op zoek naar nieuwe kennis en manieren om mijn vaardigheden verder te ontwikkelen.",
+            "Curiosity:",
+            "- I am always looking for new knowledge and ways to develop my skills.",
           ],
         },
       },
@@ -302,28 +311,28 @@ const fs = {
     cv: {
       type: "dir",
       children: {
-        "werkervaring.txt": {
+        "work-experience.txt": {
           type: "file",
           lines: [
-            "WERKERVARING",
+            "WORK EXPERIENCE",
             "-----------",
-            "Pakket Leverancier – DHL (2025-2026)",
-            "- Bezorging van pakketten en organiseren van leveringen.",
+            "Package Delivery Driver – DHL (2025-2026)",
+            "- Delivered packages and organized deliveries.",
             "",
             "Software Developer – Modern Media Hub (2024-2025)",
-            "- Ontwikkelen en onderhouden van websites.",
-            "- Aanpassen van applicaties op basis van klantbehoeften.",
+            "- Developed and maintained websites.",
+            "- Adapted applications to meet client needs.",
             "",
-            "Logistiek Medewerker – DHL (2023-2024)",
-            "- Uitvoeren van inspecties en sorteren van pakketten.",
+            "Logistics Employee – DHL (2023-2024)",
+            "- Performed inspections and sorted packages.",
           ],
         },
-        "opleidingen.txt": {
+        "education.txt": {
           type: "file",
           lines: [
-            "OPLEIDINGEN",
+            "EDUCATION",
             "----------",
-            "Cyber Security – Hogeschool van Amsterdam (2025-2027)",
+            "Cyber Security – Amsterdam University of Applied Sciences (2025-2027)",
             "Software Development – ROC Mondriaan (2022-2025)",
           ],
         },
@@ -338,8 +347,8 @@ const fs = {
           lines: [
             "PROJECT — DOS ATTACK",
             "--------------------",
-            "Omschrijving:",
-            "- Demonstratie/onderzoek naar DoS (Denial-of-Service) binnen een gecontroleerde omgeving.",
+            "Description:",
+            "- Demonstration and research into DoS (Denial-of-Service) attacks in a controlled environment.",
             "",
             "YouTube:",
             "- https://youtu.be/0zw26tSzFls",
@@ -350,8 +359,8 @@ const fs = {
           lines: [
             "PROJECT — MAN-IN-THE-MIDDLE (MITM)",
             "---------------------------------",
-            "Omschrijving:",
-            "- Demonstratie van een MITM-aanval in een lab omgeving en hoe je dit detecteert/mitigeert.",
+            "Description:",
+            "- Demonstration of a MITM attack in a lab environment and how to detect and mitigate it.",
             "",
             "YouTube:",
             "- https://youtu.be/Q5j742jkTKk",
@@ -362,8 +371,8 @@ const fs = {
           lines: [
             "PROJECT — HONEYPOT",
             "------------------",
-            "Omschrijving:",
-            "- Opzetten van een honeypot om aanvallen te observeren en logdata te verzamelen.",
+            "Description:",
+            "- Set up a honeypot to observe attacks and collect log data.",
             "",
             "YouTube:",
             "- https://youtu.be/SdyMWyrWGLI",
@@ -374,8 +383,8 @@ const fs = {
           lines: [
             "PROJECT — DNS SPOOFING",
             "----------------------",
-            "Omschrijving:",
-            "- Demonstratie van DNS spoofing en het effect op verkeer binnen een lab omgeving.",
+            "Description:",
+            "- Demonstration of DNS spoofing and its effect on traffic in a lab environment.",
             "",
             "YouTube:",
             "- https://youtu.be/SgbNDNdCYZ4",
@@ -666,6 +675,12 @@ function runCommand(raw) {
 
   if (cmdLower === "cd") {
     const arg = rest.join(" ").trim();
+    const requestedFolder = arg.replace(/^\.\//, "").replace(/\/$/, "");
+    const isTopLevelFolder = fs.children?.[requestedFolder]?.type === "dir";
+    if (!isAtRoot() && isTopLevelFolder) {
+      guideBackToRoot(`the '${requestedFolder}' folder`);
+      return;
+    }
     const target = resolvePath(arg || "~", state.cwd);
     const node = getNode(target);
     if (!node) {
@@ -711,14 +726,22 @@ function runCommand(raw) {
 
   // Shortcuts (feel like terminal aliases)
   if (cmdLower === "about" || cmdLower === "whoami") {
+    if (!isAtRoot()) {
+      guideBackToRoot("'about'");
+      return;
+    }
     printBlock(content.about());
     printBlank();
-    printLine("Tip: ls about  |  cat about/vaardigheden.txt  |  cd cv", "muted");
-    setYodaTip("Want more detail? Type 'cat about/vaardigheden.txt' to see Lenny's skills.");
+    printLine("Tip: ls about  |  cat about/skills.txt  |  cd cv", "muted");
+    setYodaTip("Want more detail? Type 'cat about/skills.txt' to see Lenny's skills.");
     return;
   }
 
   if (cmdLower === "projects") {
+    if (!isAtRoot()) {
+      guideBackToRoot("'projects'");
+      return;
+    }
     state.cwd = ["~", "projects"];
     setPrompt();
     printLine("Opened ~/projects", "accent");
@@ -934,7 +957,7 @@ formEl.addEventListener("submit", (e) => {
   if (!raw.trim()) return;
 
   if (!state.hasName) {
-    printLine(`Enter name: ${raw.trim()}`, "muted");
+    printLine(`Enter name: ${raw.trim()}`, "command");
     handlePreName(raw);
     return;
   }

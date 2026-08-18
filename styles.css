@@ -274,6 +274,16 @@ body.page-terminal .shell__hint {
   color: var(--muted);
 }
 
+.line--command {
+  margin: 7px 0 5px;
+  padding: 4px 8px;
+  border-left: 3px solid #16833b;
+  border-radius: 3px;
+  background: rgba(22, 131, 59, 0.09);
+  color: #125d2b;
+  font-weight: 600;
+}
+
 .line--accent {
   color: #315f8f;
   font-weight: 600;
@@ -325,7 +335,7 @@ body.page-terminal .shell__hint {
 }
 
 .prompt {
-  color: #276a9b;
+  color: #17191b;
   font-weight: 500;
   letter-spacing: 0.01em;
   user-select: none;
@@ -339,8 +349,8 @@ body.page-terminal .shell__hint {
   background: transparent;
   border: 0;
   outline: none;
-  color: var(--text);
-  caret-color: var(--accent);
+  color: #17191b;
+  caret-color: #17191b;
   padding: 0;
 }
 
@@ -840,7 +850,7 @@ body.page-terminal .shell__hint {
   border-radius: 999px;
   background: rgba(247, 244, 239, 0.92);
   backdrop-filter: blur(8px);
-  color: var(--accent);
+  color: #17191b;
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 500;
@@ -1030,12 +1040,24 @@ html[data-theme="dark"] body.page-terminal .line--hacker {
   color: #39ff75;
 }
 
+html[data-theme="dark"] body.page-terminal .line--command {
+  border-left-color: #39ff75;
+  background: rgba(57, 255, 117, 0.1);
+  color: #a8f5be;
+}
+
 html[data-theme="dark"] .page-switch--attention::before {
   color: #39ff75;
 }
 
 html[data-theme="dark"] body.page-terminal .prompt {
-  color: #69bdf2;
+  color: #f1f3f5;
+}
+
+html[data-theme="dark"] body.page-terminal .input__field,
+html[data-theme="dark"] .page-switch {
+  color: #f1f3f5;
+  caret-color: #f1f3f5;
 }
 
 html[data-theme="dark"] .site-header {

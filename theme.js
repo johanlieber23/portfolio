@@ -8,7 +8,7 @@ function setTheme(theme) {
   themeToggle?.setAttribute("aria-pressed", String(isDark));
   themeToggle?.setAttribute(
     "aria-label",
-    isDark ? "Lichte modus inschakelen" : "Donkere modus inschakelen",
+    isDark ? "Enable light mode" : "Enable dark mode",
   );
 }
 
