@@ -16,6 +16,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="preload" href="./yodapixel.webp" as="image" />
     <link rel="preload" href="./yoda-looking-right.png" as="image" />
     <link rel="preload" href="./yoda-wave.png" as="image" />
   </head>
@@ -29,12 +30,10 @@
     </div>
 
     <div class="terminal-stage">
-      <aside class="yoda-guide" aria-label="Terminal helper">
-        <div class="yoda-guide__speech" id="yodaSpeech" role="status" aria-live="polite">
-          Type your name in the terminal!
-        </div>
+      <aside class="yoda-guide yoda-guide--booting" aria-label="Terminal helper">
+        <div class="yoda-guide__speech" id="yodaSpeech" role="status" aria-live="polite"></div>
         <div class="yoda-guide__media">
-          <img class="yoda-guide__image" id="yodaImage" src="./yodapixel.webp" alt="Pixel art Yoda" />
+          <img class="yoda-guide__image" id="yodaImage" src="./sleeping-yoda.png" alt="Sleeping pixel art Yoda" />
           <video
             class="yoda-guide__video"
             id="yodaVideo"

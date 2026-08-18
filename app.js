@@ -11,8 +11,10 @@ const yodaCanvasEl = document.getElementById("yodaCanvas");
 const yodaCanvasContext = yodaCanvasEl.getContext("2d", { willReadFrequently: true });
 let yodaAnimationFrame = null;
 let yodaWaveTimer = null;
+let yodaSpeechSequence = 0;
 
 const yodaImages = {
+  sleeping: "./sleeping-yoda.png",
   idle: "./yodapixel.webp",
   typing: "./yoda-looking-right.png",
   waving: "./yoda-wave.png",
@@ -21,12 +23,31 @@ const yodaImages = {
 function setYodaImage(stateName) {
   yodaGuideEl.classList.remove("yoda-guide--talking");
   yodaImageEl.src = yodaImages[stateName];
+  yodaImageEl.alt = stateName === "sleeping" ? "Sleeping pixel art Yoda" : "Pixel art Yoda";
+}
+
+async function typeYodaSpeech(message, duration = 1400) {
+  const sequence = ++yodaSpeechSequence;
+  yodaSpeechEl.textContent = "";
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    yodaSpeechEl.textContent = message;
+    return true;
+  }
+
+  const characterDelay = duration / Math.max(message.length, 1);
+  for (const character of message) {
+    if (sequence !== yodaSpeechSequence) return false;
+    yodaSpeechEl.textContent += character;
+    await sleep(characterDelay);
+  }
+  return sequence === yodaSpeechSequence;
 }
 
 function setYodaTip(message, imageState = "idle") {
   clearTimeout(yodaWaveTimer);
   setYodaImage(imageState);
-  yodaSpeechEl.textContent = message;
+  void typeYodaSpeech(message);
 }
 
 function isAtRoot() {
@@ -670,14 +691,14 @@ function handlePreName(input) {
   state.hasName = true;
   setNameMode(false);
 
-  yodaSpeechEl.textContent = `Hello, ${name}! Welcome to Lenny's terminal.`;
+  void typeYodaSpeech(`Hello, ${name}! Welcome to Lenny's terminal.`);
   yodaVideoEl.pause();
   cancelAnimationFrame(yodaAnimationFrame);
   clearTimeout(yodaWaveTimer);
   setYodaImage("waving");
   yodaWaveTimer = setTimeout(() => {
     setYodaImage("idle");
-    yodaSpeechEl.textContent = "Type 'help' to see all available commands!";
+    void typeYodaSpeech("Type 'help' to see all available commands!");
   }, 3000);
 
   printBlank();
@@ -1051,7 +1072,12 @@ async function runBootSequence() {
 
 async function boot() {
   setNameMode(true);
+  setYodaImage("sleeping");
   await runBootSequence();
+  yodaGuideEl.classList.remove("yoda-guide--booting");
+  setYodaImage("idle");
+  await typeYodaSpeech("Oh, we have a visitor!");
+  await typeYodaSpeech("Please type your name in the terminal!");
   highlightClassicView();
   await typeLine("Prefer the normal portfolio website?", "hacker", 26);
   await typeLine("Click 'Classic view' in the top-right corner.", "muted", 22);

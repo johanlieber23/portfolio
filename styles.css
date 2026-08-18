@@ -99,6 +99,7 @@ body.page-terminal .shell {
 .yoda-guide__speech {
   position: relative;
   width: min(230px, 100%);
+  min-height: 64px;
   margin-bottom: 20px;
   padding: 13px 16px;
   border: 1px solid rgba(48, 76, 105, 0.22);
@@ -124,6 +125,10 @@ body.page-terminal .shell {
   border-bottom: 1px solid rgba(48, 76, 105, 0.22);
   background: #faf8f5;
   transform: translateX(-50%) rotate(45deg);
+}
+
+.yoda-guide--booting .yoda-guide__speech {
+  display: none;
 }
 
 .yoda-guide__media {
