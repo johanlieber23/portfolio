@@ -143,7 +143,7 @@ function setNameMode(active) {
 function printLine(text, variant) {
   const div = document.createElement("div");
   div.className = variant ? `line line--${variant}` : "line";
-  const urlPattern = /https?:\/\/[^\s]+/g;
+  const urlPattern = /(?:https?:\/\/[^\s]+|\.\/[^\s]+\.pdf)/g;
   let cursor = 0;
   for (const match of text.matchAll(urlPattern)) {
     div.append(document.createTextNode(text.slice(cursor, match.index)));
@@ -272,12 +272,15 @@ const content = {
       "PROJECTS",
       "--------",
       "Files in ~/projects:",
-      "  dos-attack.txt    - DoS attack (with video)",
-      "  mitm-attack.txt   - Man-in-the-Middle attack (with video)",
-      "  honeypot.txt      - Honeypot (with video)",
-      "  dns-spoofing.txt  - DNS spoofing (with video)",
+      "  enterprise-active-directory.txt - Enterprise Active Directory lab (with article)",
+      "  vanguard-pentest.txt             - School pentest report for a fictional company (with PDF)",
+      "  python-rat-discord-bot.txt       - Python RAT Discord bot (lab project)",
+      "  honeypot.txt                    - Honeypot (with video)",
+      "  mitm-attack.txt                 - Man-in-the-Middle attack (with video)",
+      "  dns-spoofing.txt                - DNS spoofing (with video)",
+      "  dos-attack.txt                  - DoS attack (with video)",
       "",
-      "Tip: cat a file, e.g. 'cat projects/dos-attack.txt'",
+      "Tip: cat a file, e.g. 'cat enterprise-active-directory.txt'",
     ];
   },
   projectDetails(id) {
@@ -402,6 +405,49 @@ const fs = {
       type: "dir",
       children: {
         "projects.txt": { type: "file", lines: content.projects() },
+        "enterprise-active-directory.txt": {
+          type: "file",
+          lines: [
+            "PROJECT — ENTERPRISE ACTIVE DIRECTORY LAB",
+            "-----------------------------------------",
+            "Description:",
+            "- Built an enterprise-style Active Directory lab from scratch.",
+            "- Configured domain services, users, policies, and a structured Windows environment.",
+            "",
+            "Medium article:",
+            "- https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z",
+          ],
+        },
+        "vanguard-pentest.txt": {
+          type: "file",
+          lines: [
+            "PROJECT — VANGUARD PENETRATION TEST",
+            "------------------------------------",
+            "Description:",
+            "- Completed a grey-box penetration test and produced a professional assessment report.",
+            "- Documented the findings, risks, and recommended remediation steps.",
+            "",
+            "Important context:",
+            "- Vanguard is a fictional company.",
+            "- This assessment was completed as a school project in a controlled lab environment.",
+            "",
+            "Report:",
+            "- ./documents/Pentest_Vanguard.pdf",
+          ],
+        },
+        "python-rat-discord-bot.txt": {
+          type: "file",
+          lines: [
+            "PROJECT — PYTHON RAT DISCORD BOT",
+            "--------------------------------",
+            "Description:",
+            "- Developed a Python-based remote administration tool controlled through a Discord bot.",
+            "- Used an isolated lab environment to study command-and-control techniques and their security implications.",
+            "",
+            "Safety:",
+            "- Source code and downloads are intentionally not published.",
+          ],
+        },
         "dos-attack.txt": {
           type: "file",
           lines: [
@@ -517,7 +563,26 @@ function listDir(pathParts) {
   if (node.type !== "dir") return { error: "Not a directory" };
 
   const names = Object.keys(node.children ?? {});
-  names.sort((a, b) => a.localeCompare(b));
+  const projectOrder = [
+    "enterprise-active-directory.txt",
+    "vanguard-pentest.txt",
+    "python-rat-discord-bot.txt",
+    "honeypot.txt",
+    "mitm-attack.txt",
+    "dns-spoofing.txt",
+    "dos-attack.txt",
+    "projects.txt",
+  ];
+  if (pathParts.join("/") === "~/projects") {
+    names.sort((a, b) => {
+      const aRank = projectOrder.indexOf(a);
+      const bRank = projectOrder.indexOf(b);
+      return (aRank === -1 ? projectOrder.length : aRank)
+        - (bRank === -1 ? projectOrder.length : bRank);
+    });
+  } else {
+    names.sort((a, b) => a.localeCompare(b));
+  }
   const display = names.map((name) => {
     const child = node.children[name];
     return child?.type === "dir" ? `${name}/` : name;
