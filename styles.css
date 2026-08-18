@@ -311,6 +311,30 @@ body.page-terminal .shell__hint {
   font-weight: 600;
 }
 
+.terminal-link,
+.terminal-file {
+  color: #125d2b;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.terminal-file {
+  margin: 0;
+  padding: 1px 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.terminal-link:hover,
+.terminal-file:hover,
+.terminal-file:focus-visible {
+  color: #00a83a;
+}
+
 .input--booting .input__field {
   opacity: 0.35;
   cursor: not-allowed;
@@ -1043,6 +1067,11 @@ html[data-theme="dark"] body.page-terminal .line--hacker {
 html[data-theme="dark"] body.page-terminal .line--command {
   border-left-color: #39ff75;
   background: rgba(57, 255, 117, 0.1);
+  color: #a8f5be;
+}
+
+html[data-theme="dark"] .terminal-link,
+html[data-theme="dark"] .terminal-file {
   color: #a8f5be;
 }
 

@@ -122,8 +122,47 @@ function setNameMode(active) {
 function printLine(text, variant) {
   const div = document.createElement("div");
   div.className = variant ? `line line--${variant}` : "line";
-  div.innerHTML = escapeHtml(text);
+  const urlPattern = /https?:\/\/[^\s]+/g;
+  let cursor = 0;
+  for (const match of text.matchAll(urlPattern)) {
+    div.append(document.createTextNode(text.slice(cursor, match.index)));
+    const link = document.createElement("a");
+    link.className = "terminal-link";
+    link.href = match[0];
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = match[0];
+    div.append(link);
+    cursor = match.index + match[0].length;
+  }
+  div.append(document.createTextNode(text.slice(cursor)));
   outputEl.appendChild(div);
+  scrollToBottom();
+}
+
+function printPathListing(lines, directoryPath) {
+  for (const displayName of lines) {
+    if (displayName === "(empty)") {
+      printLine(displayName, "muted");
+      continue;
+    }
+    const name = displayName.replace(/\/$/, "");
+    const node = getNode([...directoryPath, name]);
+    const command = node?.type === "dir" ? `cd ${name}` : `cat ${name}`;
+    const line = document.createElement("div");
+    line.className = "line";
+    const button = document.createElement("button");
+    button.className = "terminal-file";
+    button.type = "button";
+    button.textContent = displayName;
+    button.title = `Run: ${command}`;
+    button.addEventListener("click", () => {
+      inputEl.value = command;
+      formEl.requestSubmit();
+    });
+    line.append(button);
+    outputEl.appendChild(line);
+  }
   scrollToBottom();
 }
 
@@ -506,6 +545,28 @@ const COMMANDS = [
   "echo",
 ];
 
+function editDistance(left, right) {
+  const rows = Array.from({ length: left.length + 1 }, (_, index) => [index]);
+  for (let column = 0; column <= right.length; column += 1) rows[0][column] = column;
+  for (let row = 1; row <= left.length; row += 1) {
+    for (let column = 1; column <= right.length; column += 1) {
+      rows[row][column] = Math.min(
+        rows[row - 1][column] + 1,
+        rows[row][column - 1] + 1,
+        rows[row - 1][column - 1] + (left[row - 1] === right[column - 1] ? 0 : 1),
+      );
+    }
+  }
+  return rows[left.length][right.length];
+}
+
+function closestCommand(input) {
+  return COMMANDS
+    .filter((command) => command.length > 1)
+    .map((command) => ({ command, distance: editDistance(input, command) }))
+    .sort((a, b) => a.distance - b.distance)[0];
+}
+
 function splitPathToken(pathToken) {
   // returns { base: string, fragment: string, hasTrailingSlash: boolean }
   const hasTrailingSlash = pathToken.endsWith("/");
@@ -631,7 +692,8 @@ yodaVideoEl.addEventListener("ended", () => {
 });
 
 function runCommand(raw) {
-  const trimmed = raw.trim();
+  const original = raw.trim();
+  const trimmed = original.toLowerCase() === "cd.." ? "cd .." : original;
   if (!trimmed) return;
 
   const lower = trimmed.toLowerCase();
@@ -664,7 +726,7 @@ function runCommand(raw) {
       setYodaTip("That location could not be listed. Type 'pwd' to check where you are.");
       return;
     }
-    printBlock(res.lines);
+    printPathListing(res.lines, target);
     if (target.join("/") === "~/projects") {
       setYodaTip("These are the project files. Type 'cat <filename>' to read one, for example: cat honeypot.txt");
     } else {
@@ -677,6 +739,11 @@ function runCommand(raw) {
     const arg = rest.join(" ").trim();
     const requestedFolder = arg.replace(/^\.\//, "").replace(/\/$/, "");
     const isTopLevelFolder = fs.children?.[requestedFolder]?.type === "dir";
+    if (!isAtRoot() && requestedFolder === state.cwd[state.cwd.length - 1]) {
+      printLine(`You are already in ${displayPath(state.cwd)}.`, "muted");
+      setYodaTip("You're already in this folder. Type 'ls' to see its files.");
+      return;
+    }
     if (!isAtRoot() && isTopLevelFolder) {
       guideBackToRoot(`the '${requestedFolder}' folder`);
       return;
@@ -693,6 +760,16 @@ function runCommand(raw) {
       setYodaTip("That is a file. Use 'cat <filename>' to read it instead.");
       return;
     }
+    if (target.join("/") === state.cwd.join("/")) {
+      if (isAtRoot()) {
+        printLine("You are already in the main folder.", "muted");
+        setYodaTip("You're already at the main folder. Try 'ls', 'about', or 'projects'.");
+      } else {
+        printLine(`You are already in ${displayPath(state.cwd)}.`, "muted");
+        setYodaTip("You're already in this folder. Type 'ls' to see its files.");
+      }
+      return;
+    }
     state.cwd = target;
     setPrompt();
     setYodaTip(`You're now in ${displayPath(target)}. Type 'ls' to see what's inside.`);
@@ -703,12 +780,26 @@ function runCommand(raw) {
     const arg = rest.join(" ").trim();
     if (!arg) {
       printLine("cat: missing file operand", "error");
-      setYodaTip("Add a filename after 'cat', for example: cat projects.txt");
+      const currentDirectory = getNode(state.cwd);
+      const exampleFile = Object.entries(currentDirectory?.children ?? {})
+        .find(([, node]) => node.type === "file")?.[0];
+      setYodaTip(exampleFile
+        ? `Add a filename after 'cat', for example: cat ${exampleFile}`
+        : "Add a filename after 'cat'. Type 'ls' to see the available files.");
       return;
     }
     const target = resolvePath(arg, state.cwd);
     const res = readFile(target);
     if (res.error) {
+      const currentFolder = state.cwd[state.cwd.length - 1];
+      if (!isAtRoot() && arg.startsWith(`${currentFolder}/`)) {
+        const localName = arg.slice(currentFolder.length + 1);
+        if (getNode(resolvePath(localName, state.cwd))?.type === "file") {
+          printLine(`You are already inside ${currentFolder}. Use 'cat ${localName}'.`, "error");
+          setYodaTip(`You're already in this folder. Type 'cat ${localName}' without '${currentFolder}/'.`);
+          return;
+        }
+      }
       printLine(`cat: ${res.error}`, "error");
       setYodaTip("I can't read that file. Type 'ls' and copy one of the filenames exactly.");
       return;
@@ -761,9 +852,9 @@ function runCommand(raw) {
     return;
   }
 
-  if (["1", "2", "3"].includes(cmdLower)) {
-    const detail = content.projectDetails(cmdLower);
-    if (detail) printBlock(detail);
+  if (/^\d+$/.test(cmdLower)) {
+    printLine("Projects are opened by filename, not by number.", "error");
+    setYodaTip("Type 'ls' to see the project filenames, then use 'cat <filename>' to open one.");
     return;
   }
 
@@ -772,9 +863,33 @@ function runCommand(raw) {
     return;
   }
 
+  const enteredPath = resolvePath(trimmed, state.cwd);
+  if (!trimmed.includes(" ") && getNode(enteredPath)?.type === "file") {
+    printLine(`'${trimmed}' is a file, not a command.`, "error");
+    setYodaTip(`To read it, type 'cat ${trimmed}'.`);
+    return;
+  }
+
+  if (["open", "go"].includes(cmdLower)) {
+    const destination = rest.join(" ").trim() || "a folder";
+    printLine(`'${cmdLower}' is not used in this terminal.`, "error");
+    if (!isAtRoot()) {
+      setYodaTip(`First type 'cd ..' to go back. Then use 'cd ${destination}' to enter that folder.`);
+    } else {
+      setYodaTip(`Use 'cd ${destination}' to enter a folder, or type 'projects' to open the projects section.`);
+    }
+    return;
+  }
+
   printLine(`Command not found: ${trimmed}`, "error");
-  printLine("Type 'help' to see available commands.", "muted");
-  setYodaTip("I don't know that command yet. Type 'help' to see the commands you can use.");
+  const suggestion = closestCommand(cmdLower);
+  if (suggestion && suggestion.distance <= 2) {
+    printLine(`Did you mean '${suggestion.command}'?`, "muted");
+    setYodaTip(`That looks close to '${suggestion.command}'. Try typing it again.`);
+  } else {
+    printLine("Type 'help' to see available commands.", "muted");
+    setYodaTip("I don't know that command yet. Type 'help' to see the commands you can use.");
+  }
 }
 
 function sleep(ms) {
