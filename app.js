@@ -260,7 +260,7 @@ const content = {
       "ABOUT ME",
       "-------",
       "I am Lenny Bos, a 20-year-old student at the Amsterdam University of Applied Sciences, pursuing an Associate Degree in Cyber Security.",
-      "I am currently in my first year and passionate about everything related to cybersecurity.",
+      "I am currently in my second year and passionate about everything related to cybersecurity.",
       "",
       "Before this degree, I completed a Software Development program, which gave me a solid technical foundation.",
       "Outside my studies, I take part in various sports and spend a lot of time learning new skills,",
@@ -909,7 +909,6 @@ function runCommand(raw) {
     }
     printBlock(content.about());
     printBlank();
-    printLine("Tip: ls about  |  cat about/skills.txt  |  cd cv", "muted");
     setYodaTip("Want more detail? Type 'cat about/skills.txt' to see Lenny's skills.");
     return;
   }
