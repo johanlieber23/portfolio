@@ -331,7 +331,7 @@ const content = {
       "Email: lenny.bos07@gmail.com",
       "Location: The Hague, NL",
       "",
-      "DM kan ook via LinkedIn:",
+      "You can also send me a message on LinkedIn:",
       "  https://www.linkedin.com/in/lennybos",
     ];
   },
