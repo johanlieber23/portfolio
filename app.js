@@ -23,6 +23,12 @@ function setYodaImage(stateName) {
   yodaImageEl.src = yodaImages[stateName];
 }
 
+function setYodaTip(message, imageState = "idle") {
+  clearTimeout(yodaWaveTimer);
+  setYodaImage(imageState);
+  yodaSpeechEl.textContent = message;
+}
+
 function renderTalkingYoda() {
   if (yodaVideoEl.paused || yodaVideoEl.ended) return;
 
@@ -599,7 +605,10 @@ function handlePreName(input) {
   cancelAnimationFrame(yodaAnimationFrame);
   clearTimeout(yodaWaveTimer);
   setYodaImage("waving");
-  yodaWaveTimer = setTimeout(() => setYodaImage("idle"), 3000);
+  yodaWaveTimer = setTimeout(() => {
+    setYodaImage("idle");
+    yodaSpeechEl.textContent = "Type 'help' to see all available commands!";
+  }, 3000);
 
   printBlank();
   printLine(`Welcome, ${state.user}.`, "accent");
@@ -622,11 +631,13 @@ function runCommand(raw) {
 
   if (cmdLower === "clear" || cmdLower === "cls") {
     clearScreen();
+    setYodaTip("Clean slate! Type 'help' whenever you need the command list.");
     return;
   }
 
   if (cmdLower === "help" || cmdLower === "?") {
     printBlock(content.help());
+    setYodaTip("Start with 'projects' to explore Lenny's work, or try 'about' to learn more about him.");
     return;
   }
 
@@ -641,9 +652,15 @@ function runCommand(raw) {
     const res = listDir(target);
     if (res.error) {
       printLine(`ls: ${res.error}`, "error");
+      setYodaTip("That location could not be listed. Type 'pwd' to check where you are.");
       return;
     }
     printBlock(res.lines);
+    if (target.join("/") === "~/projects") {
+      setYodaTip("These are the project files. Type 'cat <filename>' to read one, for example: cat honeypot.txt");
+    } else {
+      setYodaTip("Type 'cd <folder>' to enter a folder, or 'cat <filename>' to read a file.");
+    }
     return;
   }
 
@@ -653,14 +670,17 @@ function runCommand(raw) {
     const node = getNode(target);
     if (!node) {
       printLine("cd: No such file or directory", "error");
+      setYodaTip("I can't find that folder. Type 'ls' to see the available names.");
       return;
     }
     if (node.type !== "dir") {
       printLine("cd: Not a directory", "error");
+      setYodaTip("That is a file. Use 'cat <filename>' to read it instead.");
       return;
     }
     state.cwd = target;
     setPrompt();
+    setYodaTip(`You're now in ${displayPath(target)}. Type 'ls' to see what's inside.`);
     return;
   }
 
@@ -668,15 +688,18 @@ function runCommand(raw) {
     const arg = rest.join(" ").trim();
     if (!arg) {
       printLine("cat: missing file operand", "error");
+      setYodaTip("Add a filename after 'cat', for example: cat projects.txt");
       return;
     }
     const target = resolvePath(arg, state.cwd);
     const res = readFile(target);
     if (res.error) {
       printLine(`cat: ${res.error}`, "error");
+      setYodaTip("I can't read that file. Type 'ls' and copy one of the filenames exactly.");
       return;
     }
     printBlock(res.lines);
+    setYodaTip("Nice! Try another file, or type 'cd ..' to go back one folder.");
     return;
   }
 
@@ -691,24 +714,27 @@ function runCommand(raw) {
     printBlock(content.about());
     printBlank();
     printLine("Tip: ls about  |  cat about/vaardigheden.txt  |  cd cv", "muted");
+    setYodaTip("Want more detail? Type 'cat about/vaardigheden.txt' to see Lenny's skills.");
     return;
   }
 
   if (cmdLower === "projects") {
-    const res = listDir(resolvePath("projects", ["~"]));
-    if (res.lines) printBlock(["projects/", ...res.lines.map((l) => `  ${l}`)]);
-    printBlank();
-    printBlock(content.projects());
+    state.cwd = ["~", "projects"];
+    setPrompt();
+    printLine("Opened ~/projects", "accent");
+    setYodaTip("You're in the projects folder. Type 'ls' to see all available project files.");
     return;
   }
 
   if (cmdLower === "contact") {
     printBlock(content.contact());
+    setYodaTip("You can email Lenny or use the 'socials' command to see all his profile links.");
     return;
   }
 
   if (cmdLower === "socials") {
     printBlock(content.socials());
+    setYodaTip("Those are Lenny's profiles. Type 'projects' if you want to continue exploring his work.");
     return;
   }
 
@@ -725,6 +751,7 @@ function runCommand(raw) {
 
   printLine(`Command not found: ${trimmed}`, "error");
   printLine("Type 'help' to see available commands.", "muted");
+  setYodaTip("I don't know that command yet. Type 'help' to see the commands you can use.");
 }
 
 function sleep(ms) {
