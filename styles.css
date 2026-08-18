@@ -210,6 +210,16 @@ body.page-terminal .shell__hint {
 .dot--red {
   background: #ff605c;
 }
+.dot--close {
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+.dot--close:hover,
+.dot--close:focus-visible {
+  filter: brightness(0.88);
+  transform: scale(1.12);
+  outline: none;
+}
 .dot--yellow {
   background: #ffbd44;
 }
