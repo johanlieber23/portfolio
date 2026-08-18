@@ -16,6 +16,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="preload" href="./yoda-looking-right.png" as="image" />
+    <link rel="preload" href="./yoda-wave.png" as="image" />
   </head>
   <body class="page-terminal">
     <div class="page-actions">
@@ -26,7 +28,27 @@
       </button>
     </div>
 
-    <main class="shell" aria-label="Terminal portfolio">
+    <div class="terminal-stage">
+      <aside class="yoda-guide" aria-label="Terminal helper">
+        <div class="yoda-guide__speech" id="yodaSpeech" role="status" aria-live="polite">
+          Type your name in the terminal!
+        </div>
+        <div class="yoda-guide__media">
+          <img class="yoda-guide__image" id="yodaImage" src="./yodapixel.webp" alt="Pixel art Yoda" />
+          <video
+            class="yoda-guide__video"
+            id="yodaVideo"
+            src="./yoda-talking.mp4"
+            muted
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+          ></video>
+          <canvas class="yoda-guide__canvas" id="yodaCanvas" aria-hidden="true"></canvas>
+        </div>
+      </aside>
+
+      <main class="shell" aria-label="Terminal portfolio">
       <header class="shell__topbar" aria-hidden="true">
         <span class="dot dot--red"></span>
         <span class="dot dot--yellow"></span>
@@ -57,7 +79,8 @@
         Start met <span class="kbd">help</span>, <span class="kbd">about</span> of
         <span class="kbd">projects</span>
       </footer>
-    </main>
+      </main>
+    </div>
 
     <script src="./theme.js" defer></script>
     <script src="./app.js" defer></script>

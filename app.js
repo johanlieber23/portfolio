@@ -3,6 +3,64 @@ const promptEl = document.getElementById("prompt");
 const formEl = document.getElementById("inputForm");
 const inputEl = document.getElementById("commandInput");
 const screenEl = document.getElementById("screen");
+const yodaGuideEl = document.querySelector(".yoda-guide");
+const yodaSpeechEl = document.getElementById("yodaSpeech");
+const yodaImageEl = document.getElementById("yodaImage");
+const yodaVideoEl = document.getElementById("yodaVideo");
+const yodaCanvasEl = document.getElementById("yodaCanvas");
+const yodaCanvasContext = yodaCanvasEl.getContext("2d", { willReadFrequently: true });
+let yodaAnimationFrame = null;
+let yodaWaveTimer = null;
+
+const yodaImages = {
+  idle: "./yodapixel.webp",
+  typing: "./yoda-looking-right.png",
+  waving: "./yoda-wave.png",
+};
+
+function setYodaImage(stateName) {
+  yodaGuideEl.classList.remove("yoda-guide--talking");
+  yodaImageEl.src = yodaImages[stateName];
+}
+
+function renderTalkingYoda() {
+  if (yodaVideoEl.paused || yodaVideoEl.ended) return;
+
+  const sourceWidth = yodaVideoEl.videoWidth;
+  const sourceHeight = yodaVideoEl.videoHeight;
+  if (sourceWidth && sourceHeight) {
+    const scale = Math.min(1, 480 / sourceWidth);
+    const width = Math.round(sourceWidth * scale);
+    const height = Math.round(sourceHeight * scale);
+    if (yodaCanvasEl.width !== width || yodaCanvasEl.height !== height) {
+      yodaCanvasEl.width = width;
+      yodaCanvasEl.height = height;
+    }
+
+    yodaCanvasContext.drawImage(yodaVideoEl, 0, 0, width, height);
+    const frame = yodaCanvasContext.getImageData(0, 0, width, height);
+    const pixels = frame.data;
+    const cornerIndexes = [0, (width - 1) * 4, (height - 1) * width * 4, (height * width - 1) * 4];
+    const background = cornerIndexes.reduce(
+      (color, index) => [color[0] + pixels[index], color[1] + pixels[index + 1], color[2] + pixels[index + 2]],
+      [0, 0, 0],
+    ).map((value) => value / cornerIndexes.length);
+
+    for (let index = 0; index < pixels.length; index += 4) {
+      const distance = Math.hypot(
+        pixels[index] - background[0],
+        pixels[index + 1] - background[1],
+        pixels[index + 2] - background[2],
+      );
+      if (distance < 48) pixels[index + 3] = 0;
+      else if (distance < 85) pixels[index + 3] = Math.round(((distance - 48) / 37) * 255);
+    }
+
+    yodaCanvasContext.putImageData(frame, 0, 0);
+  }
+
+  yodaAnimationFrame = requestAnimationFrame(renderTalkingYoda);
+}
 
 const state = {
   user: "guest",
@@ -204,6 +262,7 @@ const content = {
       "LINKS",
       "-----",
       "LinkedIn: https://www.linkedin.com/in/lennybos",
+      "GitHub: https://github.com/johanlieber23",
       "TryHackMe: https://tryhackme.com/p/lb0z",
       "Hack The Box: https://ctf.hackthebox.com/user/profile/1011845",
     ];
@@ -535,11 +594,23 @@ function handlePreName(input) {
   state.hasName = true;
   setNameMode(false);
 
+  yodaSpeechEl.textContent = `Hello, ${name}! Welcome to Lenny's terminal.`;
+  yodaVideoEl.pause();
+  cancelAnimationFrame(yodaAnimationFrame);
+  clearTimeout(yodaWaveTimer);
+  setYodaImage("waving");
+  yodaWaveTimer = setTimeout(() => setYodaImage("idle"), 3000);
+
   printBlank();
   printLine(`Welcome, ${state.user}.`, "accent");
   printLine("Type 'help' to explore.", "muted");
   printBlank();
 }
+
+yodaVideoEl.addEventListener("ended", () => {
+  cancelAnimationFrame(yodaAnimationFrame);
+  yodaGuideEl.classList.remove("yoda-guide--talking");
+});
 
 function runCommand(raw) {
   const trimmed = raw.trim();
@@ -817,7 +888,7 @@ async function boot() {
   setNameMode(true);
   await runBootSequence();
   highlightClassicView();
-  await typeLine("Prefer the normal portfolio website?", "accent", 26);
+  await typeLine("Prefer the normal portfolio website?", "hacker", 26);
   await typeLine("Click 'Classic view' in the top-right corner.", "muted", 22);
   printBlank();
   printLine("Enter your name to begin.", "muted");
@@ -850,6 +921,11 @@ inputEl.addEventListener("keydown", (e) => {
   if (e.key !== "Tab") return;
   e.preventDefault();
   handleTabAutocomplete();
+});
+
+inputEl.addEventListener("input", () => {
+  if (state.booting || state.hasName) return;
+  setYodaImage(inputEl.value.trim() ? "typing" : "idle");
 });
 
 window.addEventListener("click", () => {
