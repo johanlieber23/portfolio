@@ -12,6 +12,8 @@ const yodaCanvasContext = yodaCanvasEl.getContext("2d", { willReadFrequently: tr
 let yodaAnimationFrame = null;
 let yodaWaveTimer = null;
 let yodaSpeechSequence = 0;
+let yodaTypingTimer = null;
+let yodaSpeaking = false;
 
 const yodaImages = {
   sleeping: "./media/sleeping-yoda.png",
@@ -28,10 +30,14 @@ function setYodaImage(stateName) {
 
 async function typeYodaSpeech(message, duration = 1400) {
   const sequence = ++yodaSpeechSequence;
+  clearTimeout(yodaTypingTimer);
+  yodaSpeaking = true;
+  setYodaImage("idle");
   yodaSpeechEl.textContent = "";
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     yodaSpeechEl.textContent = message;
+    yodaSpeaking = false;
     return true;
   }
 
@@ -41,7 +47,9 @@ async function typeYodaSpeech(message, duration = 1400) {
     yodaSpeechEl.textContent += character;
     await sleep(characterDelay);
   }
-  return sequence === yodaSpeechSequence;
+  const completed = sequence === yodaSpeechSequence;
+  if (completed) yodaSpeaking = false;
+  return completed;
 }
 
 function setYodaTip(message, imageState = "idle") {
@@ -1179,8 +1187,34 @@ inputEl.addEventListener("keydown", (e) => {
 });
 
 inputEl.addEventListener("input", () => {
-  if (state.booting || state.hasName) return;
-  setYodaImage(inputEl.value.trim() ? "typing" : "idle");
+  if (state.booting) return;
+
+  clearTimeout(yodaTypingTimer);
+  if (yodaSpeaking) return;
+
+  if (!inputEl.value.trim()) {
+    setYodaImage("idle");
+    return;
+  }
+
+  setYodaImage("typing");
+  yodaTypingTimer = window.setTimeout(() => {
+    if (!yodaSpeaking) setYodaImage("idle");
+  }, 1000);
+});
+
+document.querySelectorAll(".mobile-commands [data-command]").forEach((button) => {
+  button.addEventListener("click", () => {
+    if (state.booting || !state.hasName) {
+      inputEl.focus();
+      return;
+    }
+
+    state.cwd = ["~"];
+    setPrompt();
+    inputEl.value = button.dataset.command;
+    formEl.requestSubmit();
+  });
 });
 
 window.addEventListener("click", () => {
