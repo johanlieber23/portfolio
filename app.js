@@ -488,8 +488,8 @@ const fs = {
             "Description:",
             "- Set up a honeypot to observe attacks and collect log data.",
             "",
-            "YouTube:",
-            "- https://youtu.be/SdyMWyrWGLI",
+            "Online Blog:",
+            "- https://meetcyber.net/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb",
           ],
         },
         "dns-spoofing.txt": {
