@@ -11,7 +11,7 @@ function setTheme(theme) {
   );
 }
 
-setTheme(storedTheme || "light");
+setTheme(storedTheme || (document.body.classList.contains("page-portfolio") ? "dark" : "light"));
 
 themeToggle?.addEventListener("click", () => {
   const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";

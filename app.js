@@ -370,14 +370,14 @@ const fs = {
           lines: [
             "WORK EXPERIENCE",
             "-----------",
-            "Package Delivery Driver – DHL (2025-2026)",
+            "Package Delivery Driver - DHL (2025-2026)",
             "- Delivered packages and organized deliveries.",
             "",
-            "Software Developer – Modern Media Hub (2024-2025)",
+            "Software Developer - Modern Media Hub (2024-2025)",
             "- Developed and maintained websites.",
             "- Adapted applications to meet client needs.",
             "",
-            "Logistics Employee – DHL (2023-2024)",
+            "Logistics Employee - DHL (2023-2024)",
             "- Performed inspections and sorted packages.",
           ],
         },
@@ -386,8 +386,8 @@ const fs = {
           lines: [
             "EDUCATION",
             "----------",
-            "Cyber Security – Amsterdam University of Applied Sciences (2025-2027)",
-            "Software Development – ROC Mondriaan (2022-2025)",
+            "Cyber Security - Amsterdam University of Applied Sciences (2025-2027)",
+            "Software Development - ROC Mondriaan (2022-2025)",
           ],
         },
       },
@@ -399,7 +399,7 @@ const fs = {
         "enterprise-active-directory.txt": {
           type: "file",
           lines: [
-            "PROJECT — ENTERPRISE ACTIVE DIRECTORY SECURITY LAB",
+            "PROJECT - ENTERPRISE ACTIVE DIRECTORY SECURITY LAB",
             "--------------------------------------------------",
             "Description:",
             "- Designed and built an enterprise-style Active Directory security lab from scratch.",
@@ -413,7 +413,7 @@ const fs = {
         "vanguard-pentest.txt": {
           type: "file",
           lines: [
-            "PROJECT — VANGUARD PENETRATION TEST",
+            "PROJECT - VANGUARD PENETRATION TEST",
             "------------------------------------",
             "Description:",
             "- Performed a grey-box Windows privilege-escalation assessment.",
@@ -431,7 +431,7 @@ const fs = {
         "python-rat-discord-bot.txt": {
           type: "file",
           lines: [
-            "PROJECT — PYTHON C2 RESEARCH LAB",
+            "PROJECT - PYTHON C2 RESEARCH LAB",
             "---------------------------------",
             "Description:",
             "- Built a Python remote-administration proof of concept controlled through a Discord bot.",
@@ -444,7 +444,7 @@ const fs = {
         "dos-attack.txt": {
           type: "file",
           lines: [
-            "PROJECT — DOS ATTACK",
+            "PROJECT - DOS ATTACK",
             "--------------------",
             "Description:",
             "- Demonstration and research into DoS (Denial-of-Service) attacks in a controlled environment.",
@@ -456,7 +456,7 @@ const fs = {
         "mitm-attack.txt": {
           type: "file",
           lines: [
-            "PROJECT — MAN-IN-THE-MIDDLE (MITM)",
+            "PROJECT - MAN-IN-THE-MIDDLE (MITM)",
             "---------------------------------",
             "Description:",
             "- Demonstration of a MITM attack in a lab environment and how to detect and mitigate it.",
@@ -468,7 +468,7 @@ const fs = {
         "honeypot.txt": {
           type: "file",
           lines: [
-            "PROJECT — THREAT HUNTING LAB WITH COWRIE & WAZUH",
+            "PROJECT - THREAT HUNTING LAB WITH COWRIE & WAZUH",
             "-------------------------------------------------",
             "Description:",
             "- Built and deployed a public Cowrie SSH honeypot on an Ubuntu VPS.",
@@ -484,7 +484,7 @@ const fs = {
         "dns-spoofing.txt": {
           type: "file",
           lines: [
-            "PROJECT — DNS SPOOFING",
+            "PROJECT - DNS SPOOFING",
             "----------------------",
             "Description:",
             "- Demonstration of DNS spoofing and its effect on traffic in a lab environment.",
@@ -1006,23 +1006,23 @@ async function runBootSequence() {
   inputEl.disabled = true;
   formEl.classList.add("input--booting");
 
-  // Phase 1 — firmware / POST
+  // Phase 1 - firmware / POST
   await printLinesFast(
     [
       { text: "LENNY-PORTFOLIO UEFI Firmware v2.14", variant: "muted" },
       { text: "Copyright (c) 2026 Lenny Bos", variant: "muted" },
       { text: "", variant: "muted" },
       { text: "CPU: Virtual Core i7 @ 3.20GHz", variant: "muted" },
-      { text: "RAM: 8192 MB DDR4 — OK", variant: "ok" },
-      { text: "Storage: NVMe 512GB — detected", variant: "ok" },
-      { text: "Network: Intel I219-V — link up", variant: "ok" },
+      { text: "RAM: 8192 MB DDR4 - OK", variant: "ok" },
+      { text: "Storage: NVMe 512GB - detected", variant: "ok" },
+      { text: "Network: Intel I219-V - link up", variant: "ok" },
       { text: "Booting from Hard Disk...", variant: "muted" },
     ],
     62,
   );
   await pauseThenClear(320);
 
-  // Phase 2 — kernel ring buffer
+  // Phase 2 - kernel ring buffer
   let t = 0;
   const kernelBoot = [
     kernelLine(t, "Linux version 6.8.0-portfolio (lenny@build)"),
@@ -1071,7 +1071,7 @@ async function runBootSequence() {
   );
   await pauseThenClear(260);
 
-  // Phase 3 — systemd bringing up services
+  // Phase 3 - systemd bringing up services
   const units = [
     "udev.service",
     "systemd-journald.service",
@@ -1118,7 +1118,7 @@ async function runBootSequence() {
   await printLinesFast(systemdLines, 32);
   await pauseThenClear(240);
 
-  // Phase 4 — final handoff (brief flash, then wipe)
+  // Phase 4 - final handoff (brief flash, then wipe)
   await printLinesFast(
     [
       { text: kernelLine(4.812004, "systemd[1]: Reached target Graphical Interface"), variant: "muted" },

@@ -1,263 +1,131 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <title>Portfolio — Lenny Bos</title>
-    <meta
-      name="description"
-      content="Portfolio of Lenny Bos, a 20-year-old Cyber Security student focused on threat hunting, detection engineering, Active Directory security, and penetration testing."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body class="page-portfolio">
-    <header class="site-header">
-      <a class="site-header__brand" href="./index.html">Lenny Bos</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="#about">About me</a>
-        <a href="#skills">Skills</a>
-        <a href="#focus">Current focus</a>
-        <a href="#experience">Experience</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
+  <title>Lenny Bos - Cyber Security Portfolio</title>
+  <meta name="description" content="Lenny Bos is a Cyber Security student building hands-on labs in threat hunting, detection engineering, Active Directory security and penetration testing." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./portfolio.css" />
+</head>
+<body class="page-portfolio">
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="#top" aria-label="Lenny Bos, back to top">LB<span>.</span></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#highlights">Highlights</a>
       </nav>
-      <div class="site-header__actions">
-        <a class="site-header__switch" href="./index.html">Terminal view</a>
-        <button class="theme-toggle" type="button" aria-label="Enable dark mode" aria-pressed="false">
-          <span class="theme-toggle__icon" aria-hidden="true">☀</span>
-          <span class="theme-toggle__icon" aria-hidden="true">☾</span>
-        </button>
+      <div class="site-actions">
+        <a class="terminal-link" href="./index.html">Terminal <span aria-hidden="true">↗</span></a>
+        <button class="theme-toggle" type="button" aria-label="Enable light mode" aria-pressed="true"><span class="theme-toggle__icon" aria-hidden="true">☀</span><span class="theme-toggle__icon" aria-hidden="true">☾</span></button>
       </div>
-    </header>
-
-    <main class="site-main">
-      <section class="hero" id="top">
-        <p class="hero__eyebrow">Cyber Security · Software Development</p>
-        <h1 class="hero__title">Lenny Bos</h1>
-        <p class="hero__lead">
-          20-year-old Cyber Security student with a background in Software Development,
-          focused on threat hunting, detection engineering, Active Directory security,
-          and incident response. I build hands-on security labs alongside my studies at
-          the Amsterdam University of Applied Sciences.
-        </p>
-        <div class="hero__availability">
-          <div>
-            <span class="hero__availability-label">Looking for</span>
-            <strong>Cyber Security graduation internship</strong>
-          </div>
-          <div>
-            <span class="hero__availability-label">Available</span>
-            <strong>February 2027</strong>
-          </div>
-          <div class="hero__availability-interests">
-            <span class="hero__availability-label">Interests</span>
-            <strong>SOC · Incident Response · Detection Engineering · Security Engineering</strong>
+    </div>
+  </header>
+  <main class="site-main" id="top">
+    <section class="hero" aria-labelledby="hero-name">
+      <div class="identity">
+        <div class="avatar"><img src="./media/lenny-bos.webp" alt="Portrait of Lenny Bos" width="112" height="112" /></div>
+        <div class="identity__copy">
+          <div class="identity__name-line"><h1 id="hero-name">Lenny Bos</h1><span class="availability-dot" title="Open to graduation internship opportunities" aria-label="Open to graduation internship opportunities"></span></div>
+          <div class="socials" aria-label="Profiles and contact">
+            <a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+            <a href="https://www.linkedin.com/in/lennybos" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+            <a href="mailto:lenny.bos07@gmail.com">Email ↗</a>
           </div>
         </div>
-        <div class="hero__actions">
-          <a class="btn btn--primary" href="#projects">View security projects</a>
-          <a class="btn btn--ghost" href="#contact">Get in touch</a>
-        </div>
-      </section>
+      </div>
+      <h2 class="hero__headline">Cyber Security Student <span>- Threat Hunting &amp; Detection Engineering</span></h2>
+      <p class="hero__intro">I build hands-on security labs to understand how attacks happen and how defenders can find them. My work covers <span class="inline-tag">Active Directory</span>, <span class="inline-tag">Wazuh</span>, <span class="inline-tag">Cowrie</span> and <span class="inline-tag">Python</span>. I study Cyber Security at the Amsterdam University of Applied Sciences, with a background in Software Development.</p>
+      <a class="button button--primary" href="./cv/CV_LENNY_BOS.pdf" target="_blank" rel="noopener noreferrer">View Resume <span aria-hidden="true">↗</span></a>
+      <div class="hero__status"><span class="status-light" aria-hidden="true"></span><span>Looking for a Cyber Security graduation internship</span><strong>Available February 2027</strong></div>
+    </section>
 
-      <section class="section" id="about">
-        <h2 class="section__title">About me</h2>
-        <div class="prose">
-          <p>
-            I am Lenny Bos, a 20-year-old second-year Cyber Security student at the
-            Amsterdam University of Applied Sciences. I learn by building controlled
-            environments where I can investigate Windows security, identity, network
-            attacks, privilege escalation, and defensive monitoring.
-          </p>
-          <p>
-            Before this degree, I completed a Software Development program at ROC
-            Mondriaan. That background helps me understand applications as well as the
-            systems protecting them. Outside my studies, I take part in various sports
-            and continue developing my practical security skills.
-          </p>
-        </div>
-      </section>
+    <section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="section-heading"><h2 id="experience-title">Experience</h2><a href="#education">Education ↗</a></div>
+      <div class="experience-list">
+        <article class="experience-item"><time>2025-2026</time><div><h3>Package Delivery Driver <span>· DHL</span></h3><p>Delivered packages and organized deliveries.</p></div></article>
+        <article class="experience-item"><time>2024-2025</time><div><h3>Software Developer <span>· Modern Media Hub</span></h3><p>Developed and maintained websites, adapting applications to client needs.</p></div></article>
+        <article class="experience-item"><time>2023-2024</time><div><h3>Logistics Employee <span>· DHL</span></h3><p>Performed inspections and sorted packages.</p></div></article>
+      </div>
+    </section>
 
-      <section class="section" id="skills">
-        <h2 class="section__title">Skills</h2>
-        <p class="section__intro">Concrete technologies and security areas I have worked with in coursework, labs, and projects.</p>
-        <div class="card-grid card-grid--3">
-          <article class="info-card">
-            <h3>Security</h3>
-            <ul class="tag-list" aria-label="Security skills">
-              <li>Active Directory Security</li>
-              <li>Vulnerability Assessment</li>
-              <li>Penetration Testing</li>
-              <li>Network Security</li>
-              <li>Windows Privilege Escalation</li>
-              <li>Threat Hunting</li>
-              <li>Detection Engineering</li>
-              <li>Log Analysis</li>
-            </ul>
-          </article>
-          <article class="info-card">
-            <h3>Tools & platforms</h3>
-            <ul class="tag-list" aria-label="Tools and platforms">
-              <li>PowerShell</li>
-              <li>PrivescCheck</li>
-              <li>Sysinternals</li>
-              <li>winPEAS</li>
-              <li>VirtualBox</li>
-              <li>Wazuh</li>
-              <li>Cowrie</li>
-              <li>OpenSearch</li>
-              <li>Linux</li>
-              <li>TryHackMe</li>
-              <li>Hack The Box</li>
-            </ul>
-          </article>
-          <article class="info-card">
-            <h3>Development</h3>
-            <ul class="tag-list" aria-label="Development skills">
-              <li>Python</li>
-              <li>JavaScript</li>
-              <li>HTML & CSS</li>
-              <li>Git</li>
-              <li>Web Development</li>
-              <li>Windows Environments</li>
-            </ul>
-          </article>
-        </div>
-      </section>
+    <section class="section featured" aria-labelledby="featured-title">
+      <div class="section-heading"><h2 id="featured-title">Featured Work</h2><a href="#projects">All projects ↗</a></div>
+      <div class="featured-grid">
+        <a class="feature-card feature-card--hunt" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">
+          <div class="feature-card__visual"><img class="feature-card__image" src="./media/wazuh-threat-hunting.png" alt="Wazuh dashboard showing 601,299 attack events and top MITRE ATT&CK categories" width="953" height="434" loading="lazy" /></div>
+          <div class="feature-card__caption"><span>SECURITY LAB / DETECTION ENGINEERING</span><h3>Threat Hunting with Cowrie &amp; Wazuh</h3><small>Read case study ↗</small></div>
+        </a>
+        <a class="feature-card feature-card--ad" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer">
+          <div class="feature-card__visual"><img class="feature-card__image" src="./media/active-directory-lab.png" alt="Active Directory Users and Computers in the enterprise lab" width="930" height="650" loading="lazy" /></div>
+          <div class="feature-card__caption"><span>ENTERPRISE LAB / IDENTITY SECURITY</span><h3>Active Directory Security Lab</h3><small>Read case study ↗</small></div>
+        </a>
+      </div>
+    </section>
 
-      <section class="section" id="focus">
-        <h2 class="section__title">Currently developing</h2>
-        <div class="focus-panel">
-          <div class="focus-panel__main">
-            <p class="focus-panel__eyebrow">Currently expanding</p>
-            <h3>Cowrie & Wazuh Threat Hunting Lab</h3>
-            <p>
-              Expanding the lab with additional threat-intelligence integrations and
-              new detection capabilities after analysing nearly 600,000 real attack events.
-            </p>
+    <section class="section" id="projects" aria-labelledby="projects-title">
+      <div class="section-heading"><h2 id="projects-title">Projects</h2><span>Selected security work</span></div>
+      <div class="project-list">
+        <article class="project"><div class="project__icon" aria-hidden="true">01</div><div class="project__body"><div class="project__top"><h3>Vanguard Penetration Test</h3><span>Penetration testing</span></div><p>Grey-box Windows privilege-escalation assessment, with findings translated into risks, priorities and practical remediation advice.</p><ul class="project__tags"><li>Windows</li><li>PowerShell</li><li>PrivescCheck</li><li>Reporting</li></ul><p class="project__note">School project in a controlled lab; all organisations and systems are fictional or lab-based.</p><a href="./documents/Pentest_Vanguard.pdf" target="_blank" rel="noopener noreferrer">View portfolio report ↗</a></div></article>
+        <article class="project"><div class="project__icon" aria-hidden="true">02</div><div class="project__body"><div class="project__top"><h3>Python C2 Research Lab</h3><span>Security research</span></div><p>Python-based remote administration proof of concept controlled through a Discord bot, built to study command-and-control behaviour and its defensive implications.</p><ul class="project__tags"><li>Python</li><li>C2 research</li><li>Isolated lab</li></ul><p class="project__note">Source code and downloads are intentionally unpublished.</p></div></article>
+        <article class="project"><div class="project__icon" aria-hidden="true">03</div><div class="project__body"><div class="project__top"><h3>Network Attack Research</h3><span>Lab demonstrations</span></div><p>Controlled demonstrations of network attack techniques, their impact and how to detect or mitigate them.</p><div class="project__links"><a href="https://youtu.be/Q5j742jkTKk" target="_blank" rel="noopener noreferrer">Man-in-the-Middle ↗</a><a href="https://youtu.be/SgbNDNdCYZ4" target="_blank" rel="noopener noreferrer">DNS Spoofing ↗</a><a href="https://youtu.be/0zw26tSzFls" target="_blank" rel="noopener noreferrer">DoS Research ↗</a></div></div></article>
+      </div>
+    </section>
+
+    <section class="section" id="technologies" aria-labelledby="technologies-title">
+      <div class="section-heading"><h2 id="technologies-title">Technologies</h2><span>Tools I use in coursework and labs</span></div>
+      <div class="tech-marquee" data-tech-list="security" aria-label="Security and monitoring tools"><p>Wazuh · Wireshark · Nmap · Burp Suite · Kali Linux · Hack The Box · TryHackMe</p></div>
+      <div class="tech-marquee tech-marquee--reverse" data-tech-list="development" aria-label="Systems and development tools"><p>Windows · Linux · PowerShell · VirtualBox · Python · Git · JavaScript · React · WordPress</p></div>
+    </section>
+
+    <section class="section" id="certifications" aria-labelledby="certifications-title">
+      <div class="section-heading"><h2 id="certifications-title">Certifications</h2><a href="https://www.linkedin.com/in/lennybos/" target="_blank" rel="noopener noreferrer">LinkedIn profile ↗</a></div>
+      <div class="certificate-list">
+        <article class="certificate"><div class="certificate__issuer certificate__issuer--cisco" aria-hidden="true"><img src="https://cdn.simpleicons.org/cisco/1BA0D7" alt="" width="44" height="44" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>CISCO</span></div><div><span class="eyebrow">PROFESSIONAL CERTIFICATION</span><h3>Cisco CyberOps Associate</h3><p>Cisco · 2026</p></div></article>
+        <article class="certificate certificate--document">
+          <div class="certificate__summary">
+            <div class="certificate__issuer certificate__issuer--ine" aria-hidden="true"><img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc3wze0lx3007irps13e6k3" alt="" width="43" height="57" loading="lazy" /></div>
+            <div><span class="eyebrow">PENETRATION TESTING</span><h3>eJPT - eLearnSecurity Junior Penetration Tester</h3><p>INE · August 2026</p></div>
           </div>
-          <ul class="focus-list">
-            <li>SOC & Detection Engineering</li>
-            <li>Incident Response</li>
-            <li>Active Directory Security</li>
-            <li>Security Engineering</li>
-            <li>Python for Security Automation</li>
-          </ul>
-        </div>
-      </section>
+          <a class="certificate__document-link" href="./media/ejpt-certificate-lenny-bos.png" target="_blank" rel="noopener noreferrer" aria-label="View Lenny Bos's eJPT certificate at full size">
+            <img class="certificate__document-image" src="./media/ejpt-certificate-lenny-bos.png" alt="eJPT Junior Penetration Tester certificate awarded to Lenny Bos on August 29, 2026" width="783" height="607" loading="lazy" />
+          </a>
+        </article>
+      </div>
+    </section>
 
-      <section class="section" id="experience">
-        <h2 class="section__title">Experience & education</h2>
-        <div class="timeline">
-          <article class="timeline__item">
-            <p class="timeline__meta">2025 – 2026</p>
-            <h3>Package Delivery Driver — DHL</h3>
-            <p>Delivered packages and organized deliveries.</p>
-          </article>
-          <article class="timeline__item">
-            <p class="timeline__meta">2024 – 2025</p>
-            <h3>Software Developer — Modern Media Hub</h3>
-            <p>Developed and maintained websites. Adapted applications to meet client needs.</p>
-          </article>
-          <article class="timeline__item">
-            <p class="timeline__meta">2023 – 2024</p>
-            <h3>Logistics Employee — DHL</h3>
-            <p>Performed inspections and sorted packages.</p>
-          </article>
-          <article class="timeline__item timeline__item--edu">
-            <p class="timeline__meta">2025 – 2027</p>
-            <h3>Cyber Security — Amsterdam University of Applied Sciences</h3>
-          </article>
-          <article class="timeline__item timeline__item--edu">
-            <p class="timeline__meta">2022 – 2025</p>
-            <h3>Software Development — ROC Mondriaan</h3>
-          </article>
-        </div>
-      </section>
+    <section class="section" id="highlights" aria-labelledby="highlights-title">
+      <div class="section-heading"><h2 id="highlights-title">Highlights</h2></div>
+      <div class="highlights-grid"><div class="highlight"><span class="highlight__number">~600K</span><h3>Real attack events analysed</h3><p>Collected through a public SSH honeypot in just over two weeks, then explored in Wazuh.</p></div><div class="highlight"><span class="highlight__number">2</span><h3>Technical disciplines</h3><p>Software Development foundations and hands-on Cyber Security study.</p></div></div>
+      <div class="focus"><div><span class="eyebrow">CURRENTLY DEVELOPING</span><h3>Cowrie &amp; Wazuh Threat Hunting Lab</h3><p>Expanding the lab with additional threat-intelligence integrations and detection capabilities.</p></div><span class="focus__arrow" aria-hidden="true">↗</span></div>
+    </section>
 
-      <section class="section" id="projects">
-        <h2 class="section__title">Projects</h2>
-        <p class="section__intro">Hands-on work showing how I build, test, document, and learn from controlled security environments.</p>
-        <div class="card-grid card-grid--2">
-          <article class="project-card project-card--featured">
-            <p class="project-card__eyebrow">Featured project</p>
-            <h3>Enterprise Active Directory Security Lab</h3>
-            <p>Designed and built an enterprise-style Windows Active Directory environment to practise identity and security concepts. Configured domain services, users, groups, policies, and a structured Windows environment.</p>
-            <dl class="project-card__meta">
-              <div><dt>Technologies</dt><dd>Windows · Active Directory · Group Policy</dd></div>
-              <div><dt>Focus</dt><dd>AD Security · Identity · Enterprise Lab Design</dd></div>
-            </dl>
-            <a href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer">Read case study →</a>
-          </article>
-          <article class="project-card project-card--featured">
-            <p class="project-card__eyebrow">Featured project</p>
-            <h3>Vanguard Penetration Test</h3>
-            <p>Performed a grey-box Windows privilege-escalation assessment and translated technical findings into risks, priorities, and practical remediation advice.</p>
-            <dl class="project-card__meta">
-              <div><dt>Technologies</dt><dd>Windows · PowerShell · PrivescCheck · Sysinternals</dd></div>
-              <div><dt>Focus</dt><dd>Privilege Escalation · Risk Assessment · Reporting</dd></div>
-            </dl>
-            <p class="project-card__note">Educational project in a controlled lab. All organisations and systems are fictional or lab-based.</p>
-            <a href="./documents/Pentest_Vanguard.pdf" target="_blank" rel="noopener noreferrer">View portfolio report →</a>
-          </article>
-          <article class="project-card">
-            <p class="project-card__eyebrow">Security research</p>
-            <h3>Python C2 Research Lab</h3>
-            <p>Built a Python-based remote administration proof of concept controlled through a Discord bot to study command-and-control behaviour and its security implications.</p>
-            <dl class="project-card__meta">
-              <div><dt>Technologies</dt><dd>Python · Discord Bot</dd></div>
-              <div><dt>Focus</dt><dd>C2 Research · Defensive Understanding</dd></div>
-            </dl>
-            <p class="project-card__note">Developed only in an isolated lab. Source code and downloads are intentionally not published.</p>
-          </article>
-          <article class="project-card project-card--featured">
-            <p class="project-card__eyebrow">Featured project</p>
-            <h3>Threat Hunting Lab with Cowrie & Wazuh</h3>
-            <p>Built and deployed a public SSH honeypot that collected nearly 600,000 real attack events in just over two weeks. Integrated Cowrie with Wazuh, wrote custom decoders and detection rules, and reconstructed attacker activity through the Wazuh Dashboard.</p>
-            <dl class="project-card__meta">
-              <div><dt>Technologies</dt><dd>Cowrie · Wazuh · OpenSearch · Ubuntu Server</dd></div>
-              <div><dt>Focus</dt><dd>Threat Hunting · SIEM · Detection Engineering · Log Analysis</dd></div>
-            </dl>
-            <a href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">Read case study →</a>
-          </article>
-          <article class="project-card project-card--labs">
-            <p class="project-card__eyebrow">Additional lab demonstrations</p>
-            <h3>Network Attack Research</h3>
-            <div class="project-lab-list">
-              <a href="https://youtu.be/Q5j742jkTKk" target="_blank" rel="noopener noreferrer"><span>Man-in-the-Middle</span><small>Attack, detection, and mitigation</small></a>
-              <a href="https://youtu.be/SgbNDNdCYZ4" target="_blank" rel="noopener noreferrer"><span>DNS Spoofing</span><small>Traffic impact in a lab environment</small></a>
-              <a href="https://youtu.be/0zw26tSzFls" target="_blank" rel="noopener noreferrer"><span>DoS Research</span><small>Controlled denial-of-service demonstration</small></a>
-            </div>
-          </article>
-        </div>
-      </section>
+    <section class="section" id="education" aria-labelledby="education-title">
+      <div class="section-heading"><h2 id="education-title">Education</h2></div>
+      <div class="education-item"><time>2025-2027</time><div><h3>Cyber Security</h3><p>Amsterdam University of Applied Sciences</p></div></div>
+      <div class="education-item"><time>2022-2025</time><div><h3>Software Development</h3><p>ROC Mondriaan</p></div></div>
+    </section>
 
-      <section class="section" id="contact">
-        <h2 class="section__title">Contact</h2>
-        <div class="contact-block">
-          <p class="contact-block__lead">I am looking for a Cyber Security graduation internship starting in February 2027.</p>
-          <p><strong>Email</strong> <a href="mailto:lenny.bos07@gmail.com">lenny.bos07@gmail.com</a></p>
-          <p><strong>Location</strong> The Hague, NL</p>
-          <div class="contact-links">
-            <a href="https://www.linkedin.com/in/lennybos" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a href="https://tryhackme.com/p/lb0z" target="_blank" rel="noopener noreferrer">TryHackMe</a>
-            <a href="https://ctf.hackthebox.com/user/profile/1011845" target="_blank" rel="noopener noreferrer">Hack The Box</a>
-          </div>
-        </div>
-      </section>
-    </main>
+    <section class="section about" id="about" aria-labelledby="about-title"><div class="section-heading"><h2 id="about-title">Beyond the lab</h2></div><p>I am a 20-year-old Cyber Security student based in The Hague, Netherlands. I learn by building controlled environments where I can investigate Windows security, identity, network attacks, privilege escalation and defensive monitoring. Outside my studies, I take part in various sports and keep developing my practical security skills.</p></section>
 
-    <footer class="site-footer">
-      <a href="./index.html">Back to the welcome page</a>
-    </footer>
-    <script src="./theme.js" defer></script>
-  </body>
+    <section class="section" id="github-activity" aria-labelledby="github-activity-title">
+      <div class="section-heading"><h2 id="github-activity-title">GitHub Activity</h2><a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">View GitHub ↗</a></div>
+      <div class="github-activity">
+        <div class="github-activity__scroll" aria-label="GitHub contributions from 28 September 2025 to 29 September 2026">
+          <div class="github-activity__months" id="github-months" aria-hidden="true"></div>
+          <div class="github-activity__grid" id="github-grid" role="img" aria-label="189 GitHub contributions from 28 September 2025 to 29 September 2026"></div>
+        </div>
+        <div class="github-activity__footer"><span><strong>189</strong> contributions in the last year</span><span>Snapshot: 29 Sep 2026</span></div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title"><span class="eyebrow">LET'S CONNECT</span><h2 id="contact-title">Let's build safer systems.</h2><p>I am looking for a Cyber Security graduation internship starting in February 2027, especially in SOC, incident response, detection engineering or security engineering.</p><div class="contact__actions"><a class="button button--primary" href="mailto:lenny.bos07@gmail.com">Email me ↗</a><a class="button button--secondary" href="https://www.linkedin.com/in/lennybos" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div><div class="contact__profiles"><a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://tryhackme.com/p/lb0z" target="_blank" rel="noopener noreferrer">TryHackMe ↗</a><a href="https://ctf.hackthebox.com/user/profile/1011845" target="_blank" rel="noopener noreferrer">Hack The Box ↗</a></div></section>
+  </main>
+  <footer class="site-footer"><span>Lenny Bos / The Hague, NL</span><a href="./index.html">Explore the terminal ↗</a></footer>
+  <script src="./theme.js" defer></script>
+  <script src="./portfolio.js" defer></script>
+</body>
 </html>
