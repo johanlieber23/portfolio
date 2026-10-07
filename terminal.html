@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Lenny Bos</title>
+    <meta
+      name="description"
+      content="Portfolio of Lenny Bos, a 20-year-old Cyber Security student focused on threat hunting, detection engineering, Active Directory security, and penetration testing."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="preload" href="./media/yodapixel.webp" as="image" />
+    <link rel="preload" href="./media/yoda-looking-right.png" as="image" />
+    <link rel="preload" href="./media/yoda-wave.png" as="image" />
+  </head>
+  <body class="page-terminal">
+    <div class="page-actions">
+      <a class="page-switch" href="./index.html">Classic view</a>
+      <button class="theme-toggle" type="button" aria-label="Enable dark mode" aria-pressed="false">
+        <span class="theme-toggle__icon" aria-hidden="true">☀</span>
+        <span class="theme-toggle__icon" aria-hidden="true">☾</span>
+      </button>
+    </div>
+
+    <div class="terminal-stage">
+      <aside class="yoda-guide yoda-guide--booting" aria-label="Terminal helper">
+        <div class="yoda-guide__speech" id="yodaSpeech" role="status" aria-live="polite"></div>
+        <div class="yoda-guide__media">
+          <img class="yoda-guide__image" id="yodaImage" src="./media/sleeping-yoda.png" alt="Sleeping pixel art Yoda" />
+          <video
+            class="yoda-guide__video"
+            id="yodaVideo"
+            src="./media/yoda-talking.mp4"
+            muted
+            playsinline
+            preload="metadata"
+            aria-hidden="true"
+          ></video>
+          <canvas class="yoda-guide__canvas" id="yodaCanvas" aria-hidden="true"></canvas>
+        </div>
+      </aside>
+
+      <main class="shell" aria-label="Terminal portfolio">
+      <header class="shell__topbar">
+        <a class="dot dot--red dot--close" href="./index.html" aria-label="Close terminal and open classic view" title="Open classic view"></a>
+        <span class="dot dot--yellow" aria-hidden="true"></span>
+        <span class="dot dot--green" aria-hidden="true"></span>
+        <span class="shell__title">lenny.bos - terminal</span>
+      </header>
+
+      <section class="shell__screen" id="screen" role="region" aria-live="polite">
+        <div class="output" id="output"></div>
+
+        <form class="input input--booting" id="inputForm" autocomplete="off">
+          <span class="prompt" id="prompt" aria-hidden="true">guest@lenny.bos:~$</span>
+          <label class="sr-only" for="commandInput">Command</label>
+          <input
+            id="commandInput"
+            class="input__field"
+            type="text"
+            inputmode="text"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            disabled
+          />
+        </form>
+      </section>
+
+      <nav class="mobile-commands" aria-label="Quick terminal commands">
+        <span class="mobile-commands__label">Quick commands</span>
+        <div class="mobile-commands__list">
+          <button type="button" data-command="about">about</button>
+          <button type="button" data-command="projects">projects</button>
+          <button type="button" data-command="cat about/skills.txt">cat skills.txt</button>
+          <button type="button" data-command="contact">contact</button>
+        </div>
+      </nav>
+
+      <footer class="shell__hint" aria-hidden="true">
+        Start with <span class="kbd">help</span>, <span class="kbd">about</span>, or
+        <span class="kbd">projects</span>
+      </footer>
+      </main>
+    </div>
+
+    <script src="./theme.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+</html>
