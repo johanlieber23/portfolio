@@ -9,3 +9,4 @@
 - 2026-10-11: Reviewed the classic landing page and its terminal view link.
 - 2026-10-12: Confirmed the live classic and terminal pages both returned HTTP 200.
 - 2026-10-12: Confirmed the live CV PDF matched the repository copy byte for byte.
+- 2026-10-12: Confirmed the live Vanguard report PDF matched the repository copy byte for byte.
