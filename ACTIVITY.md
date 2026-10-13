@@ -12,3 +12,4 @@
 - 2026-10-12: Confirmed the live Vanguard report PDF matched the repository copy byte for byte.
 - 2026-10-13: Confirmed the published classic and terminal HTML matched the repository copies after newline normalization.
 - 2026-10-13: Confirmed the published CSS and JavaScript assets matched the repository copies after newline normalization.
+- 2026-10-13: Confirmed the published CV and Vanguard PDFs matched the repository copies byte for byte.
