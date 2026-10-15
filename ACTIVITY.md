@@ -18,3 +18,4 @@
 - 2026-10-14: Verified the live Vanguard report PDF matched the repository copy byte for byte.
 - 2026-10-15: Checked the live classic and terminal pages against the repository copies after newline normalization.
 - 2026-10-15: Checked the published CSS and JavaScript assets against the repository copies after newline normalization.
+- 2026-10-15: Checked the published CV and Vanguard PDFs against the repository copies byte for byte.
