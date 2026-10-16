@@ -20,3 +20,4 @@
 - 2026-10-15: Checked the published CSS and JavaScript assets against the repository copies after newline normalization.
 - 2026-10-15: Checked the published CV and Vanguard PDFs against the repository copies byte for byte.
 - 2026-10-16: Verified the live classic and terminal pages plus CSS and JavaScript assets matched the repository copies after newline normalization.
+- 2026-10-16: Verified the published CV and Vanguard PDFs matched the repository copies byte for byte.
