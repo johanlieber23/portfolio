@@ -23,3 +23,4 @@
 - 2026-10-16: Verified the published CV and Vanguard PDFs matched the repository copies byte for byte.
 - 2026-10-17: Verified the live pages, code assets, CV and Vanguard report matched the repository copies (text after newline normalization).
 - 2026-10-26: Confirmed the published classic and terminal pages matched the repository copies after newline normalization.
+- 2026-10-26: Confirmed the published CSS and JavaScript assets matched the repository copies after newline normalization.
