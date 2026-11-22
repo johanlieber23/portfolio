@@ -106,10 +106,11 @@
             <ul class="project__tags"><li>Cowrie</li><li>Wazuh</li><li>OpenSearch</li><li>Linux</li><li>SSH</li><li>Log analysis</li></ul>
             <dl class="project__details">
               <div><dt>Detection pipeline</dt><dd>Cowrie records SSH interactions. I wrote Wazuh decoders and rules to turn those logs into alerts indexed in OpenSearch.</dd></div>
-              <div><dt>Investigation</dt><dd>The lab collected roughly 600,000 events in just over two weeks. I reconstructed a session in Wazuh and found that the alert label alone gave an incomplete picture of the activity.</dd></div>
+              <div><dt>Investigation</dt><dd>The honeypot collected roughly 600,000 attack events in just over two weeks. I reconstructed a session in Wazuh and found that the alert label alone gave an incomplete picture of the activity.</dd></div>
+              <div><dt>In development</dt><dd>I’m integrating threat intelligence and adding new detections in Wazuh.</dd></div>
             </dl>
             <div class="project__links">
-              <a href="https://meetcyber.net/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">Read the Cowrie case study</a>
+              <a href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">Read the Cowrie case study</a>
             </div>
           </div>
         </article>
@@ -181,20 +182,15 @@
 
     <section class="section" id="highlights" aria-labelledby="highlights-title">
       <div class="section-heading"><h2 id="highlights-title">Highlights</h2></div>
-      <div class="highlights-grid">
-        <article class="highlight" id="bots-achievement">
-          <h3 class="highlight__result"><strong class="highlight__number">1st</strong> place in BOTS Cisco event</h3>
-          <p>My team used Splunk to investigate realistic security scenarios at Cisco’s Boss of the SOC in <time datetime="2026-11">November 2026</time>. We were invited to compete at EMEA Boss of the SOC on <time datetime="2027-03-17">17 March 2027</time>.</p>
-          <a class="highlight__post" href="https://nl.linkedin.com/posts/lennybos_cybersecurity-splunk-bots-activity-7529114454551203840-PKvB" target="_blank" rel="noopener noreferrer">
-            <img src="./media/bots-first-place.jpg" alt="Two medal winners and two other attendees in front of the Cisco Security backdrop" width="800" height="600" loading="lazy" decoding="async" />
-            <span>View the LinkedIn post</span>
-          </a>
-        </article>
-        <div class="highlights-side">
-          <div class="highlight"><span class="highlight__number">~600K</span><h3>Real attack events analysed</h3><p>Collected through a public SSH honeypot in just over two weeks, then explored in Wazuh.</p></div>
-          <div class="focus"><div><span class="eyebrow">CURRENTLY DEVELOPING</span><h3>Cowrie &amp; Wazuh Threat Hunting Lab</h3><p>Expanding the lab with additional threat-intelligence integrations and detection capabilities.</p></div><span class="focus__arrow" aria-hidden="true">↗</span></div>
+      <article class="highlight-award" id="bots-achievement">
+        <div class="highlight-award__body">
+          <time class="highlight-meta" datetime="2026-11">November 2026</time>
+          <h3><strong>1st</strong> place at Cisco’s<br /> Boss of the SOC</h3>
+          <p>My team investigated realistic security scenarios in Splunk. We were invited to compete at EMEA Boss of the SOC on <time datetime="2027-03-17">17 March 2027</time>.</p>
+          <a class="highlight-link" href="https://nl.linkedin.com/posts/lennybos_cybersecurity-splunk-bots-activity-7529114454551203840-PKvB" target="_blank" rel="noopener noreferrer">View the LinkedIn post</a>
         </div>
-      </div>
+        <img class="highlight-award__photo" src="./media/bots-first-place.jpg" alt="Two medal winners and two other attendees in front of the Cisco Security backdrop" width="800" height="600" loading="lazy" decoding="async" />
+      </article>
     </section>
 
     <section class="section" id="education" aria-labelledby="education-title">
