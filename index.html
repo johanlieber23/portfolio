@@ -10,28 +10,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./portfolio.css" />
+  <link rel="stylesheet" href="./portfolio.css?v=cisco-compact" />
+  <link rel="stylesheet" href="./backdrop.css?v=fox-cross-card" />
+  <script>
+    if ((!location.hash || location.hash === "#top") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("forest-intro");
+      setTimeout(() => {
+        document.documentElement.classList.remove("forest-intro", "forest-unfurl");
+        document.querySelector(".site-main")?.removeAttribute("inert");
+      }, 8000);
+    }
+  </script>
 </head>
-<body class="page-portfolio">
+<body class="page-portfolio" id="top">
+  <div class="portfolio-backdrop" aria-hidden="true"><canvas data-scene="backdrop"></canvas></div>
+  <canvas class="forest-intro-foreground" aria-hidden="true"></canvas>
+  <button class="forest-intro-skip" type="button">Skip intro</button>
   <header class="site-header">
     <div class="site-header__inner">
       <a class="brand" href="#top" aria-label="Lenny Bos, back to top">LB<span>.</span></a>
       <nav class="site-nav" aria-label="Main navigation">
         <a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#highlights">Highlights</a>
       </nav>
-      <div class="site-actions">
-        <a class="terminal-link" href="./terminal.html">
+      <div class="site-actions" role="group" aria-label="Portfolio controls">
+        <a class="terminal-link" href="./terminal.html" aria-label="Terminal view" title="Terminal view">
           <svg class="terminal-link__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
             <rect x="2.25" y="3.25" width="15.5" height="13.5" rx="2.5" stroke="currentColor" stroke-width="1.5" />
             <path d="m6 8 2.5 2L6 12m4.5 0h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
-          <span>Terminal view</span>
+          <span>Terminal</span>
         </a>
-        <button class="theme-toggle" type="button" aria-label="Enable light mode" aria-pressed="true"><span class="theme-toggle__icon" aria-hidden="true">☀</span><span class="theme-toggle__icon" aria-hidden="true">☾</span></button>
+        <button class="theme-toggle" type="button" title="Switch color theme" aria-label="Enable light mode" aria-pressed="true"><span class="theme-toggle__icon" aria-hidden="true">☀</span><span class="theme-toggle__icon" aria-hidden="true">☾</span></button>
       </div>
     </div>
   </header>
-  <main class="site-main" id="top">
+  <button class="fox-pet-target" type="button" aria-label="Pet the fox" hidden></button>
+  <button class="fox-apple-target" type="button" aria-label="Throw the apple" title="Drag the apple to throw it" hidden></button>
+  <main class="site-main">
     <section class="hero" aria-labelledby="hero-name">
       <div class="identity">
         <div class="avatar"><img src="./media/lenny-bos.webp" alt="Portrait of Lenny Bos" width="112" height="112" /></div>
@@ -46,7 +61,10 @@
       </div>
       <h2 class="hero__headline">Cyber Security Student <span>– Detection Engineering &amp; Offensive Security</span></h2>
       <p class="hero__intro">I study Cyber Security at the Amsterdam University of Applied Sciences and have a background in software development. My projects include Windows compliance monitoring in <span class="inline-tag">Splunk</span>, SSH threat investigation with <span class="inline-tag">Cowrie</span> and <span class="inline-tag">Wazuh</span>, and web application security assessments.</p>
-      <a class="button button--primary" href="./cv/CV_LENNY_BOS.pdf" download="Lenny_Bos_Resume.pdf">Download Resume</a>
+      <div class="portfolio-hero-actions">
+        <a class="button button--primary" href="./cv/CV_LENNY_BOS.pdf" download="Lenny_Bos_Resume.pdf">Download Resume</a>
+        <a class="button button--secondary" href="#selected-work">Selected work</a>
+      </div>
     </section>
 
     <section class="section" id="experience" aria-labelledby="experience-title">
@@ -69,17 +87,27 @@
       </div>
     </section>
 
-    <section class="section featured" aria-labelledby="featured-title">
-      <div class="section-heading"><h2 id="featured-title">Featured Work</h2><a href="#projects">All projects ↗</a></div>
-      <div class="featured-grid">
-        <a class="feature-card feature-card--hunt" id="cowrie-writeup" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">
-          <div class="feature-card__visual"><img class="feature-card__image" src="./media/wazuh-threat-hunting.png" alt="Wazuh dashboard showing 601,299 attack events and top MITRE ATT&CK categories" width="953" height="434" loading="lazy" /></div>
-          <div class="feature-card__caption"><span>SECURITY LAB / DETECTION ENGINEERING</span><h3>Threat Hunting with Cowrie &amp; Wazuh</h3><small>Read case study ↗</small></div>
-        </a>
-        <a class="feature-card feature-card--ad" id="active-directory-writeup" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer">
-          <div class="feature-card__visual"><img class="feature-card__image" src="./media/active-directory-lab.png" alt="Active Directory Users and Computers in the enterprise lab" width="930" height="650" loading="lazy" /></div>
-          <div class="feature-card__caption"><span>ENTERPRISE LAB / IDENTITY SECURITY</span><h3>Active Directory Security Lab</h3><small>Read case study ↗</small></div>
-        </a>
+    <section class="section selected-work" id="selected-work" aria-labelledby="selected-work-title">
+      <div class="section-heading"><h2 id="selected-work-title">Selected work.</h2><a href="#projects">All projects</a></div>
+      <div class="selected-work__grid">
+        <article class="selected-case">
+          <a class="selected-case__visual" id="cowrie-writeup" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer" aria-label="Read the Cowrie and Wazuh case study on Medium">
+            <div class="selected-case__window"><div class="selected-case__bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="./media/wazuh-threat-hunting.png" alt="Wazuh dashboard showing 601,299 attack events and MITRE ATT&amp;CK categories" width="953" height="434" loading="lazy" /></div>
+          </a>
+          <p class="selected-case__category">Threat hunting / Detection engineering</p>
+          <h3>Cowrie &amp; Wazuh</h3>
+          <p>I built a public SSH honeypot and used Wazuh to investigate roughly 600,000 attack events collected in just over two weeks.</p>
+          <a class="selected-case__link" href="#cowrie-wazuh">View project details</a>
+        </article>
+        <article class="selected-case selected-case--directory">
+          <a class="selected-case__visual" id="active-directory-writeup" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer" aria-label="Read the Active Directory case study on Medium">
+            <div class="selected-case__window"><div class="selected-case__bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="./media/active-directory-lab.png" alt="Active Directory Users and Computers in the enterprise lab" width="930" height="650" loading="lazy" /></div>
+          </a>
+          <p class="selected-case__category">Enterprise lab / Identity security</p>
+          <h3>Active Directory Lab</h3>
+          <p>I built a Windows domain from scratch to learn how domain services, users, groups and policies work together.</p>
+          <a class="selected-case__link" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer">Read case study</a>
+        </article>
       </div>
     </section>
 
@@ -187,7 +215,10 @@
           <time class="highlight-meta" datetime="2026-11">November 2026</time>
           <h3><strong>1st</strong> place at Cisco’s<br /> Boss of the SOC</h3>
           <p>My team investigated realistic security scenarios in Splunk. We were invited to compete at EMEA Boss of the SOC on <time datetime="2027-03-17">17 March 2027</time>.</p>
-          <a class="highlight-link" href="https://nl.linkedin.com/posts/lennybos_cybersecurity-splunk-bots-activity-7529114454551203840-PKvB" target="_blank" rel="noopener noreferrer">View the LinkedIn post</a>
+          <div class="highlight-award__footer">
+            <a class="highlight-link" href="https://nl.linkedin.com/posts/lennybos_cybersecurity-splunk-bots-activity-7529114454551203840-PKvB" target="_blank" rel="noopener noreferrer">View the LinkedIn post</a>
+            <img class="highlight-award__logo" src="./media/cisco-logo.svg" alt="Cisco" width="90" height="54" loading="lazy" decoding="async" />
+          </div>
         </div>
         <img class="highlight-award__photo" src="./media/bots-first-place.jpg" alt="Two medal winners and two other attendees in front of the Cisco Security backdrop" width="800" height="600" loading="lazy" decoding="async" />
       </article>
@@ -215,8 +246,12 @@
     <section class="contact" id="contact" aria-labelledby="contact-title"><span class="eyebrow">LET'S CONNECT</span><h2 id="contact-title">Let's build safer systems.</h2><p>I will start my Cyber Security graduation internship at Rijkswaterstaat in February 2027. I am exploring graduate and entry-level roles in security operations, detection engineering and security engineering from July 2027.</p><div class="contact__actions"><a class="button button--primary" href="mailto:lenny.bos07@gmail.com">Email me ↗</a><a class="button button--secondary" href="https://www.linkedin.com/in/lennybos" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div><div class="contact__profiles"><a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://tryhackme.com/p/lb0z" target="_blank" rel="noopener noreferrer">TryHackMe ↗</a><a href="https://ctf.hackthebox.com/user/profile/1011845" target="_blank" rel="noopener noreferrer">Hack The Box ↗</a></div></section>
   </main>
   <footer class="site-footer"><span>Lenny Bos / Netherlands</span><a href="./terminal.html">Explore the terminal ↗</a></footer>
-  <script src="./theme.js" defer></script>
+  <script src="./theme.js?v=scroll-header" defer></script>
   <script src="./portfolio.js" defer></script>
   <script src="./project-layouts.js" defer></script>
+  <script src="./forest-intro.js?v=fox-cross-card" defer></script>
+  <script src="./fox-pet.js" defer></script>
+  <script src="./fox-apple.js?v=fox-cross-card" defer></script>
+  <script src="./scenes.js?v=fox-cross-card" defer></script>
 </body>
 </html>

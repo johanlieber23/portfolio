@@ -15,6 +15,14 @@ setTheme(storedTheme || (document.body.classList.contains("page-portfolio") ? "d
 
 themeToggle?.addEventListener("click", () => {
   const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  document.documentElement.classList.add("theme-animate");
   localStorage.setItem("portfolio-theme", nextTheme);
   setTheme(nextTheme);
 });
+
+if (document.body.classList.contains("page-portfolio")) {
+  const updateHeader = () => document.body.classList.toggle("header-visible", scrollY > 32);
+  window.addEventListener("scroll", updateHeader, { passive: true });
+  window.addEventListener("pageshow", updateHeader);
+  updateHeader();
+}

@@ -343,11 +343,23 @@ html[data-theme="light"] .highlight-award { --award-accent: #815019; }
   letter-spacing: -.075em;
 }
 .highlight-award p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.55; }
+.highlight-award__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-top: .625rem;
+}
+.highlight-award__logo {
+  display: block;
+  flex: none;
+  width: clamp(44px, 5.6vw, 66px);
+  height: auto;
+}
 .highlight-link {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  margin-top: .5rem;
   color: var(--award-accent);
   font-size: .875rem;
   font-weight: 700;
