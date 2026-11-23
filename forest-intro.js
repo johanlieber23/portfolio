@@ -97,20 +97,25 @@ function paintIntroForest(ctx, scene, daylight, time, elapsed) {
   ctx.globalAlpha = 1 - blend;
   ctx.fillStyle = paper;
   ctx.fillRect(0, 0, width, scene.height);
+  ctx.save();
+  clipForestAboveGround(ctx, 0, width, ground);
   forestStrip(ctx, width, ground / .83, time, scene.x, 0, daylight, true);
+  ctx.restore();
   forestFloor(ctx, 0, width, ground, Math.min(105, scene.height * .15));
   ctx.restore();
 }
 
 function introCardTop(scene, ground, elapsed) {
   const { reveal, surface, settle } = introTiming;
-  const below = scene.height + 22;
-  if (elapsed < surface) return below + (ground - below) * smoothTurn(introProgress(elapsed, reveal, surface));
-
-  const progress = introProgress(elapsed, surface, settle);
-  const lift = progress * .36 + progress ** 2 * .64;
-  const bounce = Math.sin(introProgress(elapsed, settle - 170, settle) * Math.PI * 2) * 5;
-  return ground + (scene.intro.panelTop - ground) * lift - bounce;
+  const from = scene.height + 22;
+  const to = scene.intro.panelTop;
+  const progress = introProgress(elapsed, reveal, settle);
+  // Use one curve through the soil line so the card never pauses mid-rise.
+  const speed = Math.max(.1, Math.min(.9, (from - ground) / Math.max(1, from - to)));
+  const surfaceProgress = (surface - reveal) / (settle - reveal);
+  const exponent = Math.log(1 - speed) / Math.log(1 - smoothTurn(surfaceProgress));
+  const lift = 1 - (1 - smoothTurn(progress)) ** exponent;
+  return from + (to - from) * lift;
 }
 
 function paintApple(ctx, x, y, scale, angle = 0) {
@@ -156,9 +161,9 @@ function introFlight(scene, ground, launchX, landing, landingGround, scale, jump
   // Keep the forward speed continuous at the crest, then carry it into the landing.
   const riseDistance = sideX - launchX;
   const fallDistance = touchdownX - sideX;
-  const crestSlope = fallDistance * crest / ((1 - crest) * riseDistance);
-  const riseTravel = rise + (1 - crestSlope) * rise * (1 - rise);
-  const x = fall > 0 ? sideX + fallDistance * fall : launchX + riseDistance * riseTravel;
+  const crestTangent = fallDistance * crest / (1 - crest);
+  const x = fall > 0 ? sideX + fallDistance * fall :
+    launchX + riseDistance * smoothTurn(rise) + crestTangent * rise * rise * (rise - 1);
 
   const leaveY = terrainHeight(launchX, ground);
   const touchdownY = terrainHeight(touchdownX, landingGround);
@@ -193,7 +198,7 @@ function paintIntroAction(ctx, scene, elapsed, driftY) {
   const baseRoute = foxRoute(normalStart, normalWidth, 0);
   const routePhase = 1120 + baseRoute.duration * (Math.PI - (band ? .58 : .76));
   const landing = foxRoute(normalStart, normalWidth, routePhase);
-  const landingGround = band ? band - 24 : height * .82 + driftY * .14;
+  const landingGround = forestGround(height, band, driftY);
   const jump = introProgress(elapsed, introTiming.jump, introTiming.land);
   let mouth;
 
@@ -231,12 +236,19 @@ function paintIntroAction(ctx, scene, elapsed, driftY) {
     const absorb = introProgress(elapsed, introTiming.land, introTiming.resume);
     const touchdown = introFlight(scene, ground, grabX, landing, landingGround, scale, 1);
     const roll = 1 - (1 - absorb) ** 3;
-    const x = touchdown.touchdownX + (landing.x - touchdown.touchdownX) * roll;
-    mouth = drawFox(ctx, x, landingGround, landing.scale, stride, {
-      torso: 1, breadth: 0, head: 1, headDepth: 0, tail: 1, lookBack: 0,
-      headDrop: 5 * (1 - absorb), stance: 1,
-      crouch: Math.sin(absorb * Math.PI) * .68, dive: 1 - smoothTurn(absorb)
-    });
+    const stridePhase = routePhase + elapsed - introTiming.resume;
+    mouth = walkFox(ctx, normalStart, normalWidth, landingGround, stridePhase, null, 0,
+      (x, walkStride, pose) => ({
+        x: touchdown.touchdownX + (x - touchdown.touchdownX) * roll,
+        stride: walkStride + Math.atan2(Math.sin(stride - walkStride), Math.cos(stride - walkStride)) * (1 - smoothTurn(absorb)),
+        pose: {
+          ...pose,
+          stance: 1 - smoothTurn(absorb),
+          headDrop: 5 * (1 - absorb),
+          crouch: Math.sin(absorb * Math.PI) * .68,
+          dive: 1 - smoothTurn(absorb)
+        }
+      }));
   } else {
     const phase = routePhase + elapsed - introTiming.resume;
     mouth = walkFox(ctx, normalStart, normalWidth, landingGround, phase);

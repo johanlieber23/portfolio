@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f3">
+  <meta name="description" content="Lenny Bos, Cyber Security student in the Netherlands. Explore hands-on work in detection engineering, threat hunting and security assessment.">
+  <title>Lenny Bos — Cyber Security Portfolio</title>
+  <link rel="icon" href="./favicon.ico?v=apple">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./activity.js" defer></script>
+  <script src="./main.js" defer></script>
+  <script src="./scenes.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top" aria-label="Lenny Bos, back to top"><span class="brand-icon" aria-hidden="true">LB</span> <span>Lenny Bos</span></a>
+      <nav aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-actions" hidden><button class="terminal-trigger" type="button" data-terminal><span aria-hidden="true">&gt;_</span> Terminal</button></div>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-art" aria-hidden="true"><canvas data-scene="station"></canvas></div>
+      <div class="hero-inner shell">
+        <div class="hero-copy">
+          <p class="mono kicker">Cyber Security / Netherlands</p>
+          <h1 id="hero-title">Lenny <em>Bos</em></h1>
+          <p class="hero-description">I study Cyber Security at the Amsterdam University of Applied Sciences and build labs to investigate threats, write detections and assess security.</p>
+          <div class="actions">
+            <a class="text-link" href="#work">Explore my work</a>
+            <a class="text-link" href="./cv/CV_LENNY_BOS.pdf" download="Lenny_Bos_Resume.pdf">Download CV</a>
+          </div>
+        </div>
+        <div class="hero-meta mono">
+          <span>Incoming intern at Rijkswaterstaat</span>
+          <a class="scroll-cue" href="#work"><span aria-hidden="true"></span>Scroll to explore</a>
+          <span>Open to roles from July 2027</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="work" id="work" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-top"><p class="mono kicker">Case studies</p><a class="text-link" href="#archive">Project archive</a></div>
+        <h2 id="work-title">Selected work<span class="accent">.</span></h2>
+        <div class="case-grid">
+          <article class="case">
+            <a class="case-image wazuh" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer" aria-label="Read the Cowrie and Wazuh case study on Medium">
+              <div class="case-window"><div class="window-bar"><span></span><span></span><span></span></div><img src="./media/wazuh-threat-hunting.png" alt="Wazuh dashboard showing 601,299 attack events and MITRE ATT&amp;CK categories" width="953" height="434" loading="lazy"></div>
+            </a>
+            <p class="mono kicker">Threat hunting / Detection engineering</p>
+            <h3>Cowrie &amp; Wazuh</h3>
+            <p>I built a public SSH honeypot and used Wazuh to investigate roughly 600,000 attack events collected in just over two weeks.</p>
+            <a class="text-link" href="#cowrie-wazuh" data-project-link>View project details</a>
+          </article>
+          <article class="case">
+            <a class="case-image directory" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb" target="_blank" rel="noopener noreferrer" aria-label="Read the Active Directory case study on Medium">
+              <div class="case-window"><div class="window-bar"><span></span><span></span><span></span></div><img src="./media/active-directory-lab.png" alt="Active Directory Users and Computers in the enterprise lab" width="930" height="650" loading="lazy"></div>
+            </a>
+            <p class="mono kicker">Enterprise lab / Identity security</p>
+            <h3>Active Directory Lab</h3>
+            <p>I built a Windows domain from scratch to learn how domain services, users, groups and policies work together.</p>
+            <a class="text-link" href="#active-directory" data-project-link>View project details</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="archive light" id="archive" aria-labelledby="archive-title">
+      <div class="shell archive-layout">
+        <div class="archive-heading">
+          <p class="mono kicker">Labs, assessments &amp; automation</p>
+          <h2 id="archive-title">Project <em>archive</em></h2>
+          <p class="mono tally" aria-live="polite">8 projects</p>
+          <div class="filters" role="group" aria-label="Filter projects" hidden>
+            <button type="button" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" data-filter="defense" aria-pressed="false">Blue team</button>
+            <button type="button" data-filter="assessment" aria-pressed="false">Assessments</button>
+            <button type="button" data-filter="research" aria-pressed="false">Research</button>
+          </div>
+        </div>
+        <div class="project-list">
+          <details id="cowrie-wazuh" data-category="defense" data-file="cowrie-wazuh">
+            <summary><span class="project-title">SSH Honeypot with Cowrie &amp; Wazuh</span><span class="project-type mono">Detection engineering</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I built custom Wazuh decoders and rules to turn Cowrie logs into alerts indexed in OpenSearch. Reconstructing a session showed how much context an alert label can miss. I’m extending the lab with threat intelligence and new detections.</p><p class="mono tags">Cowrie · Wazuh · OpenSearch · Linux · SSH</p><a class="text-link" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">Read the case study on Medium</a></div>
+          </details>
+          <details id="active-directory" data-category="defense" data-file="active-directory">
+            <summary><span class="project-title">Enterprise Active Directory Lab</span><span class="project-type mono">Identity security</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I designed an enterprise-style Windows environment and configured domain services, users, groups and policies to study how identity and access are managed.</p><p class="mono tags">Active Directory · Windows · Group Policy</p><a class="text-link" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb" target="_blank" rel="noopener noreferrer">Read the case study on Medium</a></div>
+          </details>
+          <details id="splunk-eol" data-category="defense" data-file="splunk-eol">
+            <summary><span class="project-title">Splunk EOL Compliance Monitoring</span><span class="project-type mono">Security automation</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I used PowerShell to collect Windows build inventories and Microsoft lifecycle data, then sent the records to Splunk through HTTP Event Collector. SPL matches builds to lifecycle entries and dashboards flag unsupported systems for recurring compliance reports.</p><p class="mono tags">Splunk · SPL · PowerShell · Windows · Docker</p></div>
+          </details>
+          <details id="security-homelab" data-category="defense" data-file="security-homelab">
+            <summary><span class="project-title">Security Homelab</span><span class="project-type mono">Security operations</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I set up isolated VirtualBox machines for simulation, target and monitoring roles. Using Wazuh for central monitoring, I compared activity from controlled simulations with the events and alerts recorded in the SIEM.</p><p class="mono tags">Wazuh · VirtualBox · Linux · Windows · SIEM</p></div>
+          </details>
+          <details id="juice-shop" data-category="assessment" data-file="juice-shop">
+            <summary><span class="project-title">OWASP Juice Shop Assessment</span><span class="project-type mono">Application security</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I assessed an intentionally vulnerable web application in a controlled lab. The scope included injection, cross-site scripting, insecure direct object references and authentication weaknesses. I reported the impact and possible fixes.</p><p class="mono tags">Burp Suite · OWASP Top 10 · Web application testing</p></div>
+          </details>
+          <details id="vanguard" data-category="assessment" data-file="vanguard">
+            <summary><span class="project-title">Vanguard Penetration Test</span><span class="project-type mono">School assessment</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I reviewed Windows privilege boundaries in a grey-box assessment for a fictional organisation. My report mapped the findings to their risks and prioritised remediation.</p><p class="mono tags">Windows · PowerShell · PrivescCheck · Sysinternals · Reporting</p></div>
+          </details>
+          <details id="python-c2" data-category="research" data-file="python-c2">
+            <summary><span class="project-title">Python C2 Research Lab</span><span class="project-type mono">Security research</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I studied command-and-control behaviour and the defensive implications of remote administration in an isolated Python lab.</p><p class="mono tags">Python · C2 research · Isolated lab</p></div>
+          </details>
+          <details id="network-research" data-category="research" data-file="network-research">
+            <summary><span class="project-title">Network Attack Research</span><span class="project-type mono">Lab demonstrations</span><span class="plus" aria-hidden="true"></span></summary>
+            <div class="project-detail"><p>I ran controlled lab demonstrations to study how man-in-the-middle activity, DNS spoofing and denial-of-service affect network traffic and how to detect and mitigate them.</p><p class="mono tags">Network security · TCP/IP · DNS · Wireshark</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about" aria-labelledby="about-title">
+      <div class="about-scene">
+        <canvas data-scene="passage" aria-hidden="true"></canvas>
+        <div class="about-title" data-reveal>
+          <p class="mono kicker">About me</p>
+          <h2 id="about-title">Beyond <em>the lab</em></h2>
+        </div>
+      </div>
+      <div class="shell">
+        <div class="about-grid">
+          <div class="about-intro">
+            <div class="profile"><img src="./media/lenny-bos.webp" alt="Portrait of Lenny Bos" width="80" height="80" loading="lazy"><div><strong>Lenny Bos</strong><span class="mono">Based in the Netherlands</span></div></div>
+            <p>I came to security through software development. Today I build controlled environments to understand how systems fail and what defenders can see. I’m particularly interested in incident response, threat intelligence, Windows and identity security. Outside my studies, I take part in various sports.</p>
+          </div>
+          <div class="timeline">
+            <h3 class="mono kicker" id="experience">Experience</h3>
+            <article><img src="./media/rijkswaterstaat-logo.jpg" alt="" width="44" height="44" loading="lazy"><div><p class="mono">Feb–Jul 2027 · Incoming</p><h4>Rijkswaterstaat</h4><p>Cyber Security Graduation Internship, scheduled to start on <time datetime="2027-02-01">1 February 2027</time>.</p></div></article>
+            <article><img src="./media/modern-media-hub-logo.png" alt="" width="44" height="44" loading="lazy"><div><p class="mono">2024–2025</p><h4>Modern Media Hub</h4><p>Software Developer. Built and maintained client websites, stores and portfolios with JavaScript, PHP, WordPress, React and Vue.</p></div></article>
+            <h3 class="mono kicker" id="education">Education</h3>
+            <article><div><p class="mono">2025–Jul 2027 · Expected</p><h4>Associate Degree in Cyber Security</h4><p>Amsterdam University of Applied Sciences (HvA)</p></div></article>
+            <article><div><p class="mono">2023–2025</p><h4>MBO Level 4 Software Developer</h4><p>ROC Mondriaan · Graduated in 2025</p></div></article>
+          </div>
+        </div>
+        <div class="skills" id="skills">
+          <h3>Technical skills</h3>
+          <dl>
+            <div><dt>Security operations</dt><dd>Splunk, SPL, Wazuh, SIEM, log analysis, threat hunting</dd></div>
+            <div><dt>Offensive security</dt><dd>Burp Suite, Nmap, OWASP Top 10, Kali Linux, web application testing</dd></div>
+            <div><dt>Development &amp; automation</dt><dd>Python, PowerShell, Bash, JavaScript, PHP, Git, HTML/CSS, React, Vue, WordPress</dd></div>
+            <div><dt>Systems &amp; networks</dt><dd>Windows, Linux, Docker, VirtualBox, TCP/IP, DNS, Wireshark</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="highlights light" id="highlights" aria-labelledby="highlights-title">
+      <div class="shell">
+        <p class="mono kicker">Competition &amp; credentials</p>
+        <h2 id="highlights-title">Highlights</h2>
+        <article class="award">
+          <div class="award-copy">
+            <time class="mono" datetime="2026-11">November 2026</time>
+            <h3><strong>1st</strong> <span>place at Cisco’s<br>Boss of the SOC</span></h3>
+            <p>My team used Splunk to investigate realistic security scenarios. We were invited to compete at EMEA Boss of the SOC on <time datetime="2027-03-17">17 March 2027</time>.</p>
+            <a class="text-link" href="https://nl.linkedin.com/posts/lennybos_cybersecurity-splunk-bots-activity-7529114454551203840-PKvB" target="_blank" rel="noopener noreferrer">View the LinkedIn post</a>
+          </div>
+          <img src="./media/bots-first-place.jpg" alt="Medal winners and attendees in front of the Cisco Security backdrop" width="800" height="600" loading="lazy">
+        </article>
+        <div class="credentials" id="certifications">
+          <article><p class="mono">Cisco / 2026</p><h3>CyberOps Associate</h3></article>
+          <article><p class="mono">INE Security / 2026</p><h3>eJPT — Junior Penetration Tester</h3><div class="credential-links"><a class="text-link" href="https://certs.ine.com/be597e32-3354-403e-9b17-cd4957b61afb" target="_blank" rel="noopener noreferrer">Verify credential</a><a class="text-link" href="./media/ejpt-certificate-lenny-bos.png" target="_blank" rel="noopener noreferrer">View certificate</a></div></article>
+        </div>
+        <div class="activity" id="github-activity">
+          <div class="section-top"><h3>GitHub activity</h3><a class="text-link" href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">View GitHub</a></div>
+          <div class="activity-scroll" hidden><div id="activity-grid" role="img" aria-label="GitHub contribution heatmap"></div></div>
+          <p class="mono"><strong id="activity-total">189</strong> contributions · Snapshot from <time datetime="2026-09-29">29 September 2026</time></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <div class="contact-art" aria-hidden="true"><canvas data-scene="horizon"></canvas></div>
+      <div class="shell contact-inner" data-reveal>
+        <p class="mono kicker">Contact</p>
+        <h2 id="contact-title">Let’s build<br><em>safer systems.</em></h2>
+        <p>I’m exploring graduate and entry-level roles in security operations, detection engineering and security engineering from July 2027.</p>
+        <div class="actions"><a class="button dark-button" href="mailto:lenny.bos07@gmail.com">Email me</a><a class="button outline" href="https://www.linkedin.com/in/lennybos" target="_blank" rel="noopener noreferrer">LinkedIn</a></div>
+        <div class="contact-links"><a href="https://github.com/johanlieber23" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://tryhackme.com/p/lb0z" target="_blank" rel="noopener noreferrer">TryHackMe</a><a href="https://ctf.hackthebox.com/user/profile/1011845" target="_blank" rel="noopener noreferrer">Hack The Box</a></div>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer mono"><span>Lenny Bos / Netherlands</span><a href="#top">Back to top</a></footer>
+
+  <dialog class="terminal" id="terminal" aria-labelledby="terminal-title">
+    <div class="terminal-head"><h2 class="mono" id="terminal-title">Portfolio terminal</h2><form method="dialog"><button class="terminal-close" aria-label="Close terminal">×</button></form></div>
+    <div class="terminal-body">
+      <div class="terminal-output mono" id="terminal-output" role="log" aria-label="Command output" tabindex="0"><p>Welcome to Lenny Bos’s portfolio. Type <strong>help</strong> to see commands.</p></div>
+      <form class="command-form">
+        <label for="command-input" class="mono"><span class="sr-only">Command</span><span aria-hidden="true">guest@lenny:~$</span></label>
+        <input id="command-input" spellcheck="false" autocomplete="off" autocapitalize="off" autofocus>
+        <button type="submit">Run</button>
+      </form>
+      <div class="terminal-shortcuts" aria-label="Example commands"><button type="button" data-command="help">help</button><button type="button" data-command="ls">ls</button><button type="button" data-command="about">about</button><button type="button" data-command="contact">contact</button></div>
+    </div>
+  </dialog>
+</body>
+</html>

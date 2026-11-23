@@ -415,12 +415,27 @@ function drawFox(ctx, x, baseline, scale, stride, pose) {
   return { x: x + mouthX * scale, y: ground + (mouthY - bob) * scale, scale, facing: head, bodyX: x, ground, tail };
 }
 
-function forestFloor(ctx, start, width, ground, depth) {
-  const end = start + width;
-  ctx.beginPath();
+function traceForestGround(ctx, start, end, ground) {
   ctx.moveTo(start, terrainHeight(start, ground));
   for (let x = start + 8; x < end; x += 8) ctx.lineTo(x, terrainHeight(x, ground));
   ctx.lineTo(end, terrainHeight(end, ground));
+}
+
+function clipForestAboveGround(ctx, start, width, ground) {
+  if (width <= 0) return;
+  const end = start + width;
+  ctx.beginPath();
+  traceForestGround(ctx, start, end, ground);
+  ctx.lineTo(end, 0);
+  ctx.lineTo(start, 0);
+  ctx.closePath();
+  ctx.clip();
+}
+
+function forestFloor(ctx, start, width, ground, depth) {
+  const end = start + width;
+  ctx.beginPath();
+  traceForestGround(ctx, start, end, ground);
   ctx.strokeStyle = "#363636";
   ctx.lineWidth = 9;
   ctx.stroke();
@@ -454,7 +469,7 @@ function foxRoute(start, width, phase) {
   return { x, scale, distance, duration, cycle };
 }
 
-function walkFox(ctx, start, width, ground, phase, pet = null, shift = 0) {
+function walkFox(ctx, start, width, ground, phase, pet = null, shift = 0, transition = null) {
   if (width <= 12) return;
   const { x, scale, distance, duration, cycle } = foxRoute(start, width, phase);
   const direction = Math.cos(cycle) >= 0 ? 1 : -1;
@@ -472,7 +487,7 @@ function walkFox(ctx, start, width, ground, phase, pet = null, shift = 0) {
   const tailAngle = Math.PI * smoothTurn((progress - .45) / .55);
   const stride = walked * Math.PI / (scale * 24) + (turnIndex + smoothTurn((progress - .30) / .70)) * Math.PI * 2;
   const petting = pet?.amount ?? 0;
-  return drawFox(ctx, x + shift, ground, scale, stride, {
+  const pose = {
     torso: from * Math.cos(bodyAngle),
     breadth: Math.sin(bodyAngle),
     head: from * Math.cos(headAngle),
@@ -484,7 +499,9 @@ function walkFox(ctx, start, width, ground, phase, pet = null, shift = 0) {
     crouch: petting * .72,
     petting,
     wag: pet?.age ?? 0
-  });
+  };
+  const frame = transition?.(x + shift, stride, pose) ?? { x: x + shift, stride, pose };
+  return drawFox(ctx, frame.x, ground, scale, frame.stride, frame.pose);
 }
 
 function paintBackdropFox(ctx, start, width, ground, phase, hasApple, pet, apple, time, viewportWidth) {
@@ -496,24 +513,25 @@ function paintBackdropFox(ctx, start, width, ground, phase, hasApple, pet, apple
   return fox;
 }
 
-function backdrop(ctx, w, h, x, y, time, gutter, band, daylight, foxPhase = time, hasApple = false, pet = null, apple = null, foreground = null) {
-  const ground = h * .82 + y * .14;
-  let fox = null;
+function forestGround(height, band, drift) {
+  return band ? band - 24 : height * (.82 + .065 / 2) + drift * .14;
+}
+
+function backdrop(ctx, w, h, x, y, time, gutter, band, daylight, ground) {
+  const sideGround = band ? forestGround(h, 0, y) : ground;
   for (const [start, offset, shift] of [[0, .13, -x], [w - gutter, .04, x]]) {
     ctx.save();
     ctx.beginPath();
     ctx.rect(start, 0, gutter, h);
     ctx.clip();
     ctx.save();
+    clipForestAboveGround(ctx, start, gutter, sideGround);
     ctx.translate(start, h * offset);
     const onMoonSide = start === 0 && daylight <= .5;
     const onSunSide = start !== 0 && daylight > .5;
     forestStrip(ctx, Math.max(gutter, 47), h, time, shift, y, onMoonSide || onSunSide ? daylight : null);
     ctx.restore();
-    forestFloor(ctx, start, gutter, ground + (start === 0 ? h * .065 : 0), Math.min(100, h * .13));
-    if (foxPhase !== null && !band && start !== 0) {
-      fox = paintBackdropFox(foreground ?? ctx, start, gutter, ground, foxPhase, hasApple, pet, apple, time, w);
-    }
+    forestFloor(ctx, start, gutter, sideGround, Math.min(100, h * .13));
     ctx.restore();
   }
 
@@ -526,17 +544,13 @@ function backdrop(ctx, w, h, x, y, time, gutter, band, daylight, foxPhase = time
     ctx.fillStyle = paper;
     ctx.fillRect(0, top, w, band);
     ctx.save();
+    clipForestAboveGround(ctx, 0, w, ground);
     ctx.translate(0, top - 6);
     forestStrip(ctx, w, band + 36, time, x, 0, daylight, true);
     ctx.restore();
-    const trail = top + band - 24;
-    forestFloor(ctx, 0, w, trail, 29);
-    if (foxPhase !== null) {
-      fox = paintBackdropFox(foreground ?? ctx, 0, w, trail, foxPhase, hasApple, pet, apple, time, w);
-    }
+    forestFloor(ctx, 0, w, ground, 29);
     ctx.restore();
   }
-  return fox;
 }
 
 const asciiRamp = " .,:;-=+*#%@";
@@ -577,6 +591,13 @@ function renderAscii(context, ascii, daylight, width, gutter, band = 0) {
   const glyphsByInk = inks.map(() => "");
 
   function writeRow(row, first, last) {
+    const isPaper = col => {
+      const offset = (row * columns + col) * 4;
+      return pixels[offset] === 245 && pixels[offset + 1] === 245 && pixels[offset + 2] === 243;
+    };
+    while (first < last && isPaper(first)) first++;
+    while (last > first && isPaper(last - 1)) last--;
+    if (first === last) return;
     glyphsByInk.fill("");
     for (let col = first; col < last; col++) {
       const offset = (row * columns + col) * 4;
@@ -613,11 +634,9 @@ function renderAscii(context, ascii, daylight, width, gutter, band = 0) {
   }
 }
 
-function paintAsciiBackdrop(scene, y, time) {
+function paintAsciiBackdrop(scene, y, time, paintForest) {
   const { context, ascii, width, height, x, gutter, band, intro, pet, apple } = scene;
   const root = document.documentElement;
-  const interpolated = parseFloat(getComputedStyle(root).getPropertyValue("--forest-daylight"));
-  const daylight = Number.isFinite(interpolated) ? interpolated : Number(root.dataset.theme === "light");
   const elapsed = intro?.elapsed(time) ?? null;
   const handoff = intro?.handoff;
   const foxPhase = handoff ? handoff.phase + Math.max(0, time - handoff.time) : time;
@@ -625,27 +644,41 @@ function paintAsciiBackdrop(scene, y, time) {
   if (interaction) updateFoxPet(interaction, time);
   const phase = elapsed === null ? Math.max(0, foxPhase - (interaction?.delay ?? 0)) : null;
 
-  clearAsciiSample(ascii);
   const game = elapsed === null ? apple : null;
   const foreground = scene.foreground;
   if (foreground) {
     foreground.context.clearRect(0, 0, width, height);
     clearAsciiSample(foreground.ascii);
   }
-  const fox = backdrop(ascii.context, width, height, x, y, time, gutter, band, daylight, phase, Boolean(handoff), interaction, game, game ? foreground?.ascii.context : null);
-  if (pet) positionFoxPetTarget(scene, foxAppleBusy(game) ? null : fox);
-  if (apple) positionFoxAppleTarget(scene, fox);
-  if (elapsed === null) {
-    renderAscii(context, ascii, daylight, width, gutter, band);
-    if (game && foreground) renderAscii(foreground.context, foreground.ascii, daylight, width, 0, height);
+  // Reuse the forest frame between character updates. The foreground stays
+  // on the same clock and canvas through the switch to the walking loop.
+  const ground = forestGround(height, band, y);
+  const refreshForest = paintForest || scene.lastIntroFrame !== (elapsed !== null) || !foreground;
+  if (refreshForest) {
+    const interpolated = parseFloat(getComputedStyle(root).getPropertyValue("--forest-daylight"));
+    scene.daylight = Number.isFinite(interpolated) ? interpolated : Number(root.dataset.theme === "light");
+    context.clearRect(0, 0, width, height);
+    clearAsciiSample(ascii);
+    backdrop(ascii.context, width, height, x, y, time, gutter, band, scene.daylight, ground);
+    if (elapsed !== null) paintIntroForest(ascii.context, scene, scene.daylight, time, elapsed);
+    renderAscii(context, ascii, scene.daylight, width, elapsed === null ? gutter : 0, elapsed === null ? band : height);
+  }
+  scene.lastIntroFrame = elapsed !== null;
+
+  if (elapsed !== null) {
+    paintIntroAction(foreground.ascii.context, scene, elapsed, y);
+    renderAscii(foreground.context, foreground.ascii, scene.daylight, width, 0, height);
     return;
   }
 
-  paintIntroForest(ascii.context, scene, daylight, time, elapsed);
-  renderAscii(context, ascii, daylight, width, 0, height);
-
-  paintIntroAction(foreground.ascii.context, scene, elapsed, y);
-  renderAscii(foreground.context, foreground.ascii, daylight, width, 0, height);
+  const fox = paintBackdropFox(foreground?.ascii.context ?? ascii.context, band ? 0 : width - gutter,
+    band ? width : gutter, ground, phase, Boolean(handoff), interaction, game, time, width);
+  if (refreshForest) {
+    if (pet) positionFoxPetTarget(scene, foxAppleBusy(game) ? null : fox);
+    if (apple) positionFoxAppleTarget(scene, fox);
+  }
+  if (foreground) renderAscii(foreground.context, foreground.ascii, scene.daylight, width, 0, height);
+  else renderAscii(context, ascii, scene.daylight, width, gutter, band);
 }
 
 const paintings = { station, passage, horizon };
@@ -653,7 +686,7 @@ const animatedScenes = [];
 let frameId = null;
 let lastPaint = -Infinity;
 
-function paint(scene, time) {
+function paint(scene, time, paintForest = true) {
   const { canvas, context, width, height } = scene;
   if (!width || !height) return;
   let verticalShift = 0;
@@ -671,10 +704,10 @@ function paint(scene, time) {
     scene.x += (scene.targetX - scene.x) * .12;
     scene.y += (scene.targetY - scene.y) * .12;
   }
-  context.clearRect(0, 0, width, height);
   if (scene.ascii) {
-    paintAsciiBackdrop(scene, scene.y + verticalShift, time);
+    paintAsciiBackdrop(scene, scene.y + verticalShift, time, paintForest);
   } else {
+    context.clearRect(0, 0, width, height);
     paintings[canvas.dataset.scene](context, width, height, scene.x, scene.y + verticalShift, time);
   }
 }
@@ -683,10 +716,11 @@ function animateScenes(time) {
   frameId = null;
   if (document.hidden || calmMotion.matches) return;
   const visibleScenes = animatedScenes.filter(scene => scene.visible);
-  if (time - lastPaint >= 30) {
-    for (const scene of visibleScenes) paint(scene, time);
-    lastPaint = time;
+  const tick = time - lastPaint >= 30;
+  for (const scene of visibleScenes) {
+    if (tick || scene.foreground) paint(scene, time, tick);
   }
+  if (tick) lastPaint = time;
   if (visibleScenes.length) frameId = requestAnimationFrame(animateScenes);
 }
 

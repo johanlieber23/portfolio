@@ -32,12 +32,12 @@ function appleInLane(game, x, y) {
 
 function startAppleFetch(game, origin, velocity, now) {
   if (calmMotion.matches) return;
-  const { start, width, ground, viewportWidth } = game.lane;
+  const { start, width, viewportWidth } = game.lane;
   const fox = game.fox;
   const speed = Math.min(2.2, Math.hypot(velocity.x, velocity.y));
   const thrown = speed > .23;
-  const projectedX = origin.x + (thrown ? clampFoxApple(velocity.x * 245, -510, 510) : 0);
-  const landing = appleInLane(game, projectedX, ground);
+  const projectedX = origin.x + (thrown ? clampFoxApple(velocity.x * 390, -850, 850) : 0);
+  const landing = appleInLane(game, projectedX, Infinity);
   if (start && landing.x > width && landing.x < start) {
     landing.x = landing.x < viewportWidth / 2 ? width - 18 * fox.scale : start + 18 * fox.scale;
   }
@@ -50,7 +50,7 @@ function startAppleFetch(game, origin, velocity, now) {
   const otherSide = landing.x + direction * reach;
   if ((approach < minFox || approach > maxFox) && otherSide >= minFox && otherSide <= maxFox) direction *= -1;
   const catchX = clampFoxApple(landing.x - direction * reach, minFox, maxFox);
-  const flight = thrown ? 380 + speed * 155 : 290;
+  const flight = thrown ? 460 - speed * 65 : 290;
   const run = clampFoxApple(Math.abs(catchX - fox.bodyX) / .52, 190, 1750);
   const alreadyFacing = direction * fox.facing > .65;
   const turn = alreadyFacing ? 70 : 185;
@@ -147,7 +147,7 @@ function positionFoxAppleTarget(scene, fox) {
 function appleFetchPosition(fetch, ground, scale, elapsed) {
   const p = introProgress(elapsed, 0, fetch.flight);
   const x = fetch.origin.x + (fetch.landX - fetch.origin.x) * p;
-  const floor = terrainHeight(x, ground) - 15 * scale;
+  const floor = terrainHeight(fetch.landX, ground) - 15 * scale;
   const bounce = introProgress(elapsed, fetch.flight, fetch.flight + 105);
   const y = Math.max(23 * scale,
     fetch.origin.y + (floor - fetch.origin.y) * p - fetch.loft * 4 * p * (1 - p) - Math.sin(bounce * Math.PI) * 9);
@@ -163,7 +163,7 @@ function resumeFoxAfterFetch(game, lane, now, pet) {
   const cycle = direction > 0 ? angle : Math.PI - angle;
   game.resume = {
     now, phase: 1120 + (cycle + Math.PI / 2) * route.duration,
-    shift: catchX - (center + normalized * route.distance), petDelay: pet?.delay ?? 0
+    shift: catchX - (center + normalized * route.distance), scale: route.scale, petDelay: pet?.delay ?? 0
   };
   game.fetch = null;
 }
@@ -222,8 +222,30 @@ function paintAppleGame(ctx, game, lane, phase, pet, time) {
   const elapsed = resume && !calmMotion.matches ? Math.max(0, now - resume.now) : 0;
   const roam = resume ? Math.max(0, elapsed - ((pet?.delay ?? 0) - resume.petDelay)) : 0;
   const resumedPhase = resume ? resume.phase + roam : phase;
-  const shift = resume ? resume.shift * (1 - smoothTurn(roam / Math.max(540, Math.abs(resume.shift) * 5))) : 0;
-  const fox = walkFox(ctx, start, width, ground, resumedPhase, pet, shift);
+  const returnTime = resume ? Math.max(540, Math.abs(resume.shift) * 5) : 540;
+  const progress = Math.min(1, roam / returnTime);
+  const shift = resume ? resume.shift * (1 - smoothTurn(progress)) : 0;
+  const recovery = resume ? resume.shift - shift : 0;
+  const speed = Math.abs(resume?.shift ?? 0) * 6 * progress * (1 - progress) / returnTime;
+  const run = smoothTurn((speed - .035) / .13);
+  const fox = walkFox(ctx, start, width, ground, resumedPhase, pet, shift, resume ?
+    (x, stride, pose) => {
+      const facing = -Math.sign(resume.shift);
+      const angle = Math.acos(clampFoxApple(pose.torso, -1, 1));
+      const turn = angle + ((facing > 0 ? 0 : Math.PI) - angle) * run;
+      const torso = Math.cos(turn);
+      return {
+        x,
+        stride: stride + Math.abs(recovery) * Math.PI / (resume.scale * 24),
+        pose: {
+          ...pose, torso, breadth: Math.sin(turn),
+          head: pose.head + (torso - pose.head) * run,
+          headDepth: pose.headDepth + (Math.sin(turn) - pose.headDepth) * run,
+          tail: pose.tail + (torso - pose.tail) * run,
+          lookBack: pose.lookBack * (1 - run), run
+        }
+      };
+    } : null);
   if (!fox) return null;
   game.fox = fox;
   game.fruit = heldApplePosition(fox);
