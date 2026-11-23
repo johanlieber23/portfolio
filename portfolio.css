@@ -445,3 +445,55 @@ html[data-theme="light"] .github-activity__day { --heat-empty: #ebedf0; }
 @media (max-width: 520px) {
   .github-activity { padding: 20px 17px; }
 }
+
+.koth-writeup {
+  max-width: 740px;
+  margin-inline: auto;
+}
+
+.koth-writeup section {
+  margin-block: 2rem;
+}
+
+.koth-code {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-raised, var(--bg));
+}
+
+.koth-code pre {
+  margin: 0;
+  overflow-x: auto;
+}
+
+.koth-code__redaction {
+  margin-block: .8rem;
+  padding-inline: .2rem;
+  font: .8rem/1.45 monospace;
+  opacity: .4;
+  filter: blur(3px);
+  user-select: none;
+}
+
+.koth-code figcaption {
+  font-size: .875rem;
+}
+
+.koth-leaderboard {
+  margin: 1.5rem 0;
+}
+
+.koth-leaderboard img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.koth-leaderboard figcaption {
+  margin-top: .65rem;
+  font-size: .875rem;
+}

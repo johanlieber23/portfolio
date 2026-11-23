@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="./portfolio.css?v=cisco-compact" />
+  <link rel="stylesheet" href="./portfolio.css?v=koth" />
   <link rel="stylesheet" href="./backdrop.css?v=fox-cross-card" />
   <script>
     if ((!location.hash || location.hash === "#top") && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -91,22 +91,25 @@
       <div class="section-heading"><h2 id="selected-work-title">Selected work.</h2><a href="#projects">All projects</a></div>
       <div class="selected-work__grid">
         <article class="selected-case">
+          <a class="selected-case__visual" href="./tryhackme-koth.html" aria-label="Read the Rootkit Research and Development case study">
+            <div class="selected-case__window">
+              <div class="selected-case__bar" aria-hidden="true"><i></i><i></i><i></i></div>
+              <img src="./media/koth-ide-cover.png" alt="C source excerpt displayed in a dark code editor" width="960" height="460" loading="lazy" />
+            </div>
+          </a>
+          <p class="selected-case__category">Linux security / Persistence research</p>
+          <h3>Rootkit Research and Development</h3>
+          <p>I built a user-space persistence tool in C for TryHackMe King of the Hill matches and examined the evidence it leaves on a Linux host.</p>
+          <a class="selected-case__link" href="./tryhackme-koth.html">Read case study</a>
+        </article>
+        <article class="selected-case">
           <a class="selected-case__visual" id="cowrie-writeup" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer" aria-label="Read the Cowrie and Wazuh case study on Medium">
             <div class="selected-case__window"><div class="selected-case__bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="./media/wazuh-threat-hunting.png" alt="Wazuh dashboard showing 601,299 attack events and MITRE ATT&amp;CK categories" width="953" height="434" loading="lazy" /></div>
           </a>
           <p class="selected-case__category">Threat hunting / Detection engineering</p>
           <h3>Cowrie &amp; Wazuh</h3>
           <p>I built a public SSH honeypot and used Wazuh to investigate roughly 600,000 attack events collected in just over two weeks.</p>
-          <a class="selected-case__link" href="#cowrie-wazuh">View project details</a>
-        </article>
-        <article class="selected-case selected-case--directory">
-          <a class="selected-case__visual" id="active-directory-writeup" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer" aria-label="Read the Active Directory case study on Medium">
-            <div class="selected-case__window"><div class="selected-case__bar" aria-hidden="true"><i></i><i></i><i></i></div><img src="./media/active-directory-lab.png" alt="Active Directory Users and Computers in the enterprise lab" width="930" height="650" loading="lazy" /></div>
-          </a>
-          <p class="selected-case__category">Enterprise lab / Identity security</p>
-          <h3>Active Directory Lab</h3>
-          <p>I built a Windows domain from scratch to learn how domain services, users, groups and policies work together.</p>
-          <a class="selected-case__link" href="https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z" target="_blank" rel="noopener noreferrer">Read case study</a>
+          <a class="selected-case__link" href="https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb" target="_blank" rel="noopener noreferrer">Read case study</a>
         </article>
       </div>
     </section>

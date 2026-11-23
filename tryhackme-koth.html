@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Lenny Bos reflects on Linux host integrity and incident response after playing TryHackMe King of the Hill." />
+  <meta name="color-scheme" content="dark light" />
+  <title>Rootkit Research and Development | Lenny Bos</title>
+  <link rel="icon" href="./favicon.ico?v=apple" sizes="16x16 32x32 48x48" />
+  <link rel="stylesheet" href="./portfolio.css?v=koth-leaderboard" />
+  <script src="./theme.js" defer></script>
+</head>
+<body class="page-portfolio">
+  <main class="site-main">
+    <article class="section koth-writeup" aria-labelledby="koth-title">
+      <p><a href="./index.html#selected-work">← Selected work</a></p>
+      <p class="selected-case__category">TryHackMe / Linux security</p>
+      <h1 id="koth-title">Rootkit Research and Development</h1>
+      <p>I spent an extended period playing TryHackMe King of the Hill, where players compete to gain and hold control of a shared lab machine. Once multiple players have privileged access, their scripts and persistence tools can compete for control of the same system. In my matches, that included techniques associated with rootkits. This project explores what those competing changes leave behind for an investigator. <a href="https://help.tryhackme.com/en/articles/6498315-king-of-the-hill-overview">TryHackMe's overview of the game</a></p>
+
+      <figure class="koth-leaderboard">
+        <img src="./media/tryhackme-koth-leaderboard.png" alt="Dutch all-time King of the Hill leaderboard with lb0z ranked third" width="1794" height="771" loading="lazy" />
+        <figcaption>I reached third place on the Dutch all-time King of the Hill leaderboard with 64 wins.</figcaption>
+      </figure>
+
+      <section aria-labelledby="koth-processes">
+        <h2 id="koth-processes">Recognising persistence in user space</h2>
+        <p>I built a user-space persistence tool in C for King of the Hill matches. It reacts to changes in the game's ownership file. It also adopts a process name that resembles a system service. That distinction matters when investigating an unfamiliar process. A convincing name says little about the executable behind it. The tool operates in user space.</p>
+        <p>Repeated changes to a privileged file are a reason to look at what wrote it and when. I would correlate file-change events with process execution and available audit records, then compare the executable's path and integrity with a known-good baseline. Each observation on its own can have an ordinary explanation. The sequence gives a better account of what happened.</p>
+      </section>
+
+      <section aria-labelledby="koth-code">
+        <h2 id="koth-code">Source excerpt</h2>
+        <figure class="koth-code">
+          <pre><code>#define _GNU_SOURCE
+#include &lt;ctype.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;poll.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/file.h&gt;
+#include &lt;sys/inotify.h&gt;
+#include &lt;sys/ioctl.h&gt;
+#include &lt;sys/prctl.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;linux/fs.h&gt;
+
+#ifndef KING_PATH
+#define KING_PATH "/root/king.txt"
+#endif
+#ifndef KING_USERNAME
+#define KING_USERNAME "lb0z"
+#endif
+
+static const char *g_user = KING_USERNAME;
+static const char *g_path = KING_PATH;</code></pre>
+          <div class="koth-code__redaction" aria-hidden="true">██████████████████████<br />███████████████<br />███████████████████</div>
+          <figcaption>The rest of the source code is withheld for security reasons.</figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="koth-trust">
+        <h2 id="koth-trust">Deciding which evidence to trust</h2>
+        <p>Once root access is contested, process listings and logs from that host deserve less weight. If I suspected a rootkit in a real incident, I would isolate the host, preserve the available evidence and compare local observations with logs collected elsewhere. For kernel-level suspicions, I would also compare the system against a trusted baseline from outside the affected installation.</p>
+        <p>Recovering the game objective can feel like a reset, even though the host can still contain changes made earlier. In an incident where I could no longer establish system integrity, I would rebuild from a trusted image and rotate credentials that may have been exposed.</p>
+      </section>
+
+      <section aria-labelledby="koth-takeaway">
+        <h2 id="koth-takeaway">What I took away</h2>
+        <p>KoTH gave me a concrete scenario for thinking about detection engineering. I would monitor unexpected writes to sensitive files and collect process telemetry off the host. That gives an investigator something to compare against when the system's own view becomes unreliable.</p>
+      </section>
+    </article>
+  </main>
+</body>
+</html>
