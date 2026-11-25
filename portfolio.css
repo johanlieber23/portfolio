@@ -279,7 +279,8 @@ html[data-theme="light"] .theme-toggle__icon:last-child { display: none; }
 }
 
 .tech-marquee { position: relative; overflow: hidden; padding: 4px 0; mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent); }
-.tech-marquee + .tech-marquee { margin-top: 11px; }
+.tech-marquee + .tech-marquee { margin-top: 20px; }
+.tech-marquee + div:not(.tech-marquee) { margin-top: 18px; }
 .tech-track { display: flex; width: max-content; animation: tech-slide 36s linear infinite; }
 .tech-marquee--reverse .tech-track { animation-direction: reverse; animation-duration: 43s; }
 .tech-marquee:hover .tech-track, .tech-marquee:focus-within .tech-track { animation-play-state: paused; }
