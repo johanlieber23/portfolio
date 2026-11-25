@@ -334,23 +334,28 @@ function drawFox(ctx, x, baseline, scale, stride, pose) {
   const {
     torso, breadth, head, headDepth, tail, lookBack, headDrop = 0,
     stance = 0, crouch = 0, flatGround = false, airborne = 0, dive = 0,
-    spring = 0, tuck = 0, petting = 0, wag = 0, run = 0
+    spring = 0, tuck = 0, petting = 0, wag = 0, run = 0, wallOffset = 0, wallPlant = 0, wallGrip = 0
   } = pose;
   const ground = flatGround ? baseline : terrainHeight(x, baseline);
-  const bob = Math.cos(stride * 2) * (2.3 + run * 3.5) * (1 - stance) - breadth * 3.1 - crouch * 5;
+  const cadence = 1 - stance;
+  const gallop = run * cadence;
   const reach = Math.sin(stride);
-  const pitch = (-.61 * spring - .24 * tuck + .54 * dive + .12 * petting) * torso;
+  const suspension = Math.max(0, reach);
+  const stretch = gallop * reach;
+  const boundLift = 19 * gallop * suspension ** 1.4;
+  const bob = Math.cos(stride * 2) * 2.3 * cadence - 4 * gallop * (1 - suspension) - breadth * 3.1 - crouch * 5;
+  const pitch = (-.61 * spring - .24 * tuck + .54 * dive + .12 * petting - .21 * gallop * Math.cos(stride) - wallGrip) * torso;
   const cos = Math.cos(pitch);
   const sin = Math.sin(pitch);
   const alongBody = (px, py) => [px * cos - (py + 28) * sin, px * sin + (py + 28) * cos - 28];
   ctx.save();
-  ctx.translate(x, ground - bob * scale);
+  ctx.translate(x, ground - (bob + boundLift) * scale);
   ctx.scale(scale, scale);
 
   ctx.save();
-  ctx.translate(...alongBody(-24 * torso, -28 + reach * 1.7));
+  ctx.translate(...alongBody((-24 - stretch * 5) * torso, -28 + reach * 1.7));
   const wagAngle = petting * (.19 + Math.sin(wag * .023) * .29);
-  ctx.rotate((.15 + Math.sin(stride * .57 - .4) * .23 - spring * .76 - tuck * .38 + dive * .55 + wagAngle) * tail + pitch * .35);
+  ctx.rotate((.15 + Math.sin(stride * .57 - .4) * .23 - spring * .76 - tuck * .38 + dive * .55 - stretch * .20 + wagAngle) * tail + pitch * .35);
   ctx.scale(tail, 1);
   ctx.fillStyle = "#9b321a";
   ctx.fill(foxTail);
@@ -362,16 +367,28 @@ function drawFox(ctx, x, baseline, scale, stride, pose) {
 
   for (const leg of foxLegs) {
     const step = stride + leg.phase;
+    const gallopStep = stride + (leg.rear ? Math.PI : 0) + leg.side * .25;
     const shoulderY = -25 + (leg.rear ? reach : -reach) * 2 * (1 - stance);
-    const [hip, hipY] = alongBody(leg.hip * torso + leg.side * breadth * 10, shoulderY);
+    const [hip, hipY] = alongBody(leg.hip * (1 + stretch * .16) * torso + leg.side * breadth * 10, shoulderY);
     const bound = leg.rear ? -13 * spring + 7 * tuck + 9 * dive :
       12 * spring + (19 + leg.side * 3) * tuck + (20 + leg.side * 4) * dive;
-    const foot = hip + Math.sin(step) * (torso * (13 + run * 12) + leg.side * breadth * 8) * (1 - stance) + bound * torso;
-    const swing = Math.max(0, Math.cos(step)) ** 1.35 * (12 + run * 9) * (1 - stance);
+    const walkReach = Math.sin(step) * 13;
+    const gallopReach = Math.sin(gallopStep) * 22 + (leg.rear ? -9 : 9) * suspension;
+    let foot = hip + ((walkReach + (gallopReach - walkReach) * run) * torso +
+      Math.sin(step) * leg.side * breadth * 8) * cadence + bound * torso;
+    const walkSwing = Math.max(0, Math.cos(step)) ** 1.35 * 12;
+    const gallopSwing = Math.max(0, Math.cos(gallopStep)) ** 1.25 * 17;
+    const swing = (walkSwing + (gallopSwing - walkSwing) * run) * cadence;
     const lift = leg.rear ? swing + 20 * tuck + (18 + 8 * airborne) * dive + 5 * airborne :
       (swing + 20 * spring + 29 * tuck + 8 * airborne) * (1 - dive);
     const footGround = flatGround ? ground : terrainHeight(x + foot * scale, baseline);
-    const sole = bob + (footGround - ground) / scale - lift;
+    let sole = bob + (footGround - ground) / scale - lift;
+    if (wallPlant > 0) {
+      const paw = wallOffset / scale - torso * (leg.rear ? 11 + leg.side * 3 : 3);
+      const height = leg.rear ? -12 + leg.side * 5 : -47 + leg.side * 5;
+      foot += (paw - foot) * wallPlant;
+      sole += (height - sole) * wallPlant;
+    }
     const joint = (hip + foot) / 2 + (leg.rear ? -4 - 8 * spring : 3 + 13 * tuck) * torso;
     const jointY = (hipY + sole) / 2 - 4 * tuck;
     const toe = torso * 3.4;
@@ -388,9 +405,9 @@ function drawFox(ctx, x, baseline, scale, stride, pose) {
     fillShape(ctx, "#4a241e", [[foot - 3, sole - 5], [foot + 3, sole - 5], [foot + 4 + toe, sole], [foot - 4 + toe, sole]]);
   }
 
-  const shoulder = 17 * torso + breadth * 2;
-  const hip = -19 * torso;
-  const bodyWidth = Math.hypot(30 * torso, 15 * breadth);
+  const shoulder = (17 + stretch * 4) * torso + breadth * 2;
+  const hip = (-19 - stretch * 4) * torso;
+  const bodyWidth = Math.hypot((30 + stretch * 7) * torso, 15 * breadth);
   ctx.save();
   ctx.translate(...alongBody((shoulder + hip) / 2, -28));
   ctx.rotate(reach * .043 * (1 - stance) * torso + pitch);
@@ -412,7 +429,7 @@ function drawFox(ctx, x, baseline, scale, stride, pose) {
   ctx.restore();
   ctx.restore();
   const [mouthX, mouthY] = alongBody(mouth.x, mouth.y);
-  return { x: x + mouthX * scale, y: ground + (mouthY - bob) * scale, scale, facing: head, bodyX: x, ground, tail };
+  return { x: x + mouthX * scale, y: ground + (mouthY - bob - boundLift) * scale, scale, facing: head, bodyX: x, ground, tail };
 }
 
 function traceForestGround(ctx, start, end, ground) {
@@ -557,6 +574,34 @@ const asciiRamp = " .,:;-=+*#%@";
 const nightInks = [[167, 175, 173], [242, 140, 87], [255, 222, 177], [255, 43, 56], [161, 203, 91]];
 const dayInks = [[73, 77, 76], [155, 51, 22], [117, 81, 60], [211, 9, 32], [65, 110, 36]];
 
+function snowfallAt(progress) {
+  return smoothTurn((progress - .5) / .4);
+}
+
+function paintSnowfall(ctx, scene, time) {
+  const { width, height, gutter, band, daylight } = scene;
+  ctx.save();
+  ctx.font = scene.ascii.font;
+  ctx.textBaseline = "middle";
+  const flakeCount = Math.round((2 * gutter * height + band * width) / 4400);
+  const motion = calmMotion.matches ? 0 : time;
+  ctx.fillStyle = daylight > .5 ? "#547895" : "#dfedf9";
+  for (let i = 0; i < Math.min(160, flakeCount); i++) {
+    const depth = (i * .683) % 1;
+    const fraction = ((i * .618034) % 1 + motion * (.000035 + depth * .000065)) % 1;
+    const y = fraction * height;
+    const top = band && i % 3 === 0;
+    const span = top ? width : gutter;
+    const offset = top || i % 2 === 0 ? 0 : width - gutter;
+    const x = offset + ((i * .41421) % 1) * span + Math.sin(motion * .0011 + i) * 8;
+    const flakeY = top ? fraction * (band - 4) : y;
+    if (x < 0 || x > width || (x >= gutter && x <= width - gutter && flakeY >= band - 4)) continue;
+    ctx.globalAlpha = scene.snowfall * (.22 + .74 * depth) * Math.min(1, fraction * 16, (1 - fraction) * 16);
+    ctx.fillText(depth > .83 ? "*" : depth > .48 ? "+" : ".", x, flakeY);
+  }
+  ctx.restore();
+}
+
 function sizeAsciiGrid(scene) {
   const { context, ascii, width, height } = scene;
   const fontSize = width <= 650 ? 7.5 : 8.5;
@@ -663,7 +708,10 @@ function paintAsciiBackdrop(scene, y, time, paintForest) {
     clearAsciiSample(ascii);
     backdrop(ascii.context, width, height, x, y, time, gutter, band, scene.daylight, ground, panorama);
     if (elapsed !== null) paintIntroForest(ascii.context, scene, scene.daylight, time, elapsed);
-    if (foreground) renderAscii(context, ascii, scene.daylight, width, fullWidth ? 0 : gutter, fullWidth ? height : band);
+    if (foreground) {
+      renderAscii(context, ascii, scene.daylight, width, fullWidth ? 0 : gutter, fullWidth ? height : band);
+      if (elapsed === null && scene.snowfall > .001) paintSnowfall(context, scene, time);
+    }
   }
   scene.lastIntroFrame = elapsed !== null;
 
@@ -763,6 +811,17 @@ for (const canvas of document.querySelectorAll("[data-scene]")) {
   const scene = { canvas, context, width: 0, height: 0, gutter: 0, band: 0, visible: false, x: 0, y: 0, targetX: 0, targetY: 0 };
   if (panel) {
     scene.ascii = createAsciiGrid();
+    if (canvas.hasAttribute("data-snowfall")) {
+      const updateSnowfall = () => {
+        const maxScroll = document.documentElement.scrollHeight - innerHeight;
+        scene.snowfall = snowfallAt(maxScroll > 0 ? scrollY / maxScroll : 0);
+        if (calmMotion.matches) paint(scene, 0);
+      };
+      window.addEventListener("scroll", updateSnowfall, { passive: true });
+      window.addEventListener("resize", updateSnowfall, { passive: true });
+      window.addEventListener("pageshow", updateSnowfall);
+      updateSnowfall();
+    }
     const petButton = document.querySelector(".fox-pet-target");
     if (petButton) scene.pet = setupFoxPet(petButton, panel, () => paint(scene, 0));
     const appleButton = document.querySelector(".fox-apple-target");
