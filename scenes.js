@@ -517,21 +517,21 @@ function forestGround(height, band, drift) {
   return band ? band - 24 : height * (.82 + .065 / 2) + drift * .14;
 }
 
-function backdrop(ctx, w, h, x, y, time, gutter, band, daylight, ground) {
+function backdrop(ctx, w, h, x, y, time, gutter, band, daylight, ground, panorama = false) {
   const sideGround = band ? forestGround(h, 0, y) : ground;
-  for (const [start, offset, shift] of [[0, .13, -x], [w - gutter, .04, x]]) {
+  const strips = panorama ? [[0, w, .035, x]] : [[0, gutter, .13, -x], [w - gutter, gutter, .04, x]];
+  for (const [start, width, offset, shift] of strips) {
     ctx.save();
     ctx.beginPath();
-    ctx.rect(start, 0, gutter, h);
+    ctx.rect(start, 0, width, h);
     ctx.clip();
     ctx.save();
-    clipForestAboveGround(ctx, start, gutter, sideGround);
+    clipForestAboveGround(ctx, start, width, sideGround);
     ctx.translate(start, h * offset);
-    const onMoonSide = start === 0 && daylight <= .5;
-    const onSunSide = start !== 0 && daylight > .5;
-    forestStrip(ctx, Math.max(gutter, 47), h, time, shift, y, onMoonSide || onSunSide ? daylight : null);
+    const showsSkyBody = panorama ? !band : (start === 0) === (daylight <= .5);
+    forestStrip(ctx, Math.max(width, 47), h, time, shift, y, showsSkyBody ? daylight : null, panorama);
     ctx.restore();
-    forestFloor(ctx, start, gutter, sideGround, Math.min(100, h * .13));
+    forestFloor(ctx, start, width, sideGround, Math.min(100, h * .13));
     ctx.restore();
   }
 
@@ -645,6 +645,8 @@ function paintAsciiBackdrop(scene, y, time, paintForest) {
   const phase = elapsed === null ? Math.max(0, foxPhase - (interaction?.delay ?? 0)) : null;
 
   const game = elapsed === null ? apple : null;
+  const panorama = scene.canvas.hasAttribute("data-panorama");
+  const fullWidth = panorama || elapsed !== null;
   const foreground = scene.foreground;
   if (foreground) {
     foreground.context.clearRect(0, 0, width, height);
@@ -659,9 +661,9 @@ function paintAsciiBackdrop(scene, y, time, paintForest) {
     scene.daylight = Number.isFinite(interpolated) ? interpolated : Number(root.dataset.theme === "light");
     context.clearRect(0, 0, width, height);
     clearAsciiSample(ascii);
-    backdrop(ascii.context, width, height, x, y, time, gutter, band, scene.daylight, ground);
+    backdrop(ascii.context, width, height, x, y, time, gutter, band, scene.daylight, ground, panorama);
     if (elapsed !== null) paintIntroForest(ascii.context, scene, scene.daylight, time, elapsed);
-    renderAscii(context, ascii, scene.daylight, width, elapsed === null ? gutter : 0, elapsed === null ? band : height);
+    if (foreground) renderAscii(context, ascii, scene.daylight, width, fullWidth ? 0 : gutter, fullWidth ? height : band);
   }
   scene.lastIntroFrame = elapsed !== null;
 
@@ -678,7 +680,7 @@ function paintAsciiBackdrop(scene, y, time, paintForest) {
     if (apple) positionFoxAppleTarget(scene, fox);
   }
   if (foreground) renderAscii(foreground.context, foreground.ascii, scene.daylight, width, 0, height);
-  else renderAscii(context, ascii, scene.daylight, width, gutter, band);
+  else renderAscii(context, ascii, scene.daylight, width, fullWidth ? 0 : gutter, fullWidth ? height : band);
 }
 
 const paintings = { station, passage, horizon };

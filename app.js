@@ -141,8 +141,7 @@ function setPrompt() {
 function setNameMode(active) {
   formEl.classList.toggle("input--name", active);
   if (active) {
-    // Hide prompt completely during name entry.
-    promptEl.textContent = "";
+    promptEl.textContent = "login:";
   } else {
     setPrompt();
   }
@@ -151,7 +150,7 @@ function setNameMode(active) {
 function printLine(text, variant) {
   const div = document.createElement("div");
   div.className = variant ? `line line--${variant}` : "line";
-  const urlPattern = /(?:https?:\/\/[^\s]+|\.\/[^\s]+\.pdf)/g;
+  const urlPattern = /(?:https?:\/\/[^\s]+|\.\/[\w/-]+\.(?:html|pdf|png)(?:#[\w-]+)?)/g;
   let cursor = 0;
   for (const match of text.matchAll(urlPattern)) {
     div.append(document.createTextNode(text.slice(cursor, match.index)));
@@ -195,37 +194,10 @@ function printPathListing(lines, directoryPath) {
   scrollToBottom();
 }
 
-async function typeLine(text, variant, delayMs = 28) {
-  const div = document.createElement("div");
-  div.className = variant ? `line line--${variant}` : "line";
-  outputEl.appendChild(div);
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    div.textContent = text;
-    scrollToBottom();
-    return;
-  }
-
-  for (const character of text) {
-    div.textContent += character;
-    scrollToBottom();
-    await sleep(delayMs);
-  }
-}
-
-function highlightClassicView() {
-  const classicViewLink = document.querySelector(".page-switch");
-  if (!classicViewLink) return;
-  classicViewLink.classList.add("page-switch--attention");
-  window.setTimeout(() => classicViewLink.classList.remove("page-switch--attention"), 8000);
-}
-
-function printBlank() {
-  printLine(" ", "muted");
-}
-
 function printBlock(lines, variant) {
-  for (const line of lines) printLine(line, variant);
+  for (const line of lines) {
+    if (line.trim()) printLine(line, variant);
+  }
 }
 
 function commandEcho(raw) {
@@ -284,6 +256,7 @@ const content = {
       "PROJECTS",
       "--------",
       "Files in ~/projects:",
+      "  rootkit-research.txt            - Linux persistence research in TryHackMe KoTH",
       "  splunk-eol.txt                  - Splunk EOL Compliance Monitoring",
       "  honeypot.txt                    - Cowrie & Wazuh threat hunting lab (with article)",
       "  security-homelab.txt           - Virtualised security monitoring lab",
@@ -402,6 +375,7 @@ const fs = {
             "https://certs.ine.com/be597e32-3354-403e-9b17-cd4957b61afb",
             "",
             "Cisco CyberOps Associate - Cisco (2026)",
+            "Certificate: ./media/cyberops-certificate-lenny-bos.png",
           ],
         },
         "education.txt": {
@@ -419,12 +393,22 @@ const fs = {
       type: "dir",
       children: {
         "projects.txt": { type: "file", lines: content.projects() },
+        "rootkit-research.txt": {
+          type: "file",
+          lines: [
+            "ROOTKIT RESEARCH AND DEVELOPMENT",
+            "- Studied user-space persistence and Linux host integrity in TryHackMe King of the Hill.",
+            "- Reached third place on the Dutch all-time KoTH leaderboard, with 64 wins.",
+            "Case study and leaderboard: ./tryhackme-koth.html",
+          ],
+        },
         "splunk-eol.txt": {
           type: "file",
           lines: [
             "SPLUNK EOL COMPLIANCE MONITORING",
             "- Collected Windows build and lifecycle data with PowerShell and ingested it into Splunk through HTTP Event Collector.",
             "- Used SPL and dashboards to identify unsupported systems and support recurring reporting.",
+            "Project overview: ./index.html#splunk-eol",
           ],
         },
         "security-homelab.txt": {
@@ -433,6 +417,8 @@ const fs = {
             "SECURITY HOMELAB",
             "- Built isolated virtual machines for attack simulation, targets and monitoring.",
             "- Used Wazuh to investigate alerts from controlled simulations.",
+            "Project overview: ./index.html#security-homelab",
+            "Related Active Directory write-up: https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb",
           ],
         },
         "juice-shop.txt": {
@@ -441,6 +427,7 @@ const fs = {
             "OWASP JUICE SHOP SECURITY ASSESSMENT",
             "- Assessed a controlled lab application with Burp Suite and OWASP Top 10.",
             "- Documented web application weaknesses, their impact and potential fixes.",
+            "Assessment overview: ./index.html#juice-shop",
           ],
         },
         "enterprise-active-directory.txt": {
@@ -452,6 +439,7 @@ const fs = {
             "- Designed and built an enterprise-style Active Directory security lab from scratch.",
             "- Configured domain services, users, groups, policies, and a structured Windows environment.",
             "- Focus: AD Security, Identity, and Enterprise Lab Design.",
+            "Lab screenshot: ./media/active-directory-lab.png",
             "",
             "Medium article:",
             "- https://medium.com/@lb0z/building-my-first-enterprise-active-directory-lab-from-scratch-e3ef325e29bb?sharedUserId=lb0z",
@@ -486,6 +474,7 @@ const fs = {
             "",
             "Safety:",
             "- Source code and downloads are intentionally not published.",
+            "Research overview: ./index.html#python-c2",
           ],
         },
         "dos-attack.txt": {
@@ -523,6 +512,7 @@ const fs = {
             "- Integrated Cowrie with Wazuh and OpenSearch.",
             "- Created custom decoders and detection rules and investigated attacker activity.",
             "- Focus: Threat Hunting, SIEM, Detection Engineering, and Log Analysis.",
+            "Wazuh dashboard: ./media/wazuh-threat-hunting.png",
             "",
             "Medium article:",
             "- https://medium.com/meetcyber/building-a-threat-hunting-lab-with-cowrie-wazuh-analyzing-nearly-600-000-real-attack-events-12b21b0440cb",
@@ -608,6 +598,7 @@ function listDir(pathParts) {
 
   const names = Object.keys(node.children ?? {});
   const projectOrder = [
+    "rootkit-research.txt",
     "splunk-eol.txt",
     "honeypot.txt",
     "security-homelab.txt",
@@ -813,10 +804,8 @@ function handlePreName(input) {
     void typeYodaSpeech("Type 'help' to see all available commands!");
   }, 3000);
 
-  printBlank();
-  printLine(`Welcome, ${state.user}.`, "accent");
+  printLine(`Welcome, ${state.user}.`);
   printLine("Type 'help' to explore.", "muted");
-  printBlank();
 }
 
 yodaVideoEl.addEventListener("ended", () => {
@@ -955,7 +944,6 @@ function runCommand(raw) {
       return;
     }
     printBlock(content.about());
-    printBlank();
     setYodaTip("Want more detail? Type 'cat about/skills.txt' to see Lenny's skills.");
     return;
   }
@@ -1184,20 +1172,21 @@ async function runBootSequence() {
 async function boot() {
   setNameMode(true);
   setYodaImage("sleeping");
-  await runBootSequence();
-  yodaGuideEl.classList.remove("yoda-guide--booting");
-  setYodaImage("idle");
-  await typeYodaSpeech("Oh, we have a visitor!");
-  await typeYodaSpeech("Please type your name in the terminal!");
-  highlightClassicView();
-  await typeLine("Prefer the normal portfolio website?", "hacker", 26);
-  await typeLine("Click 'Classic view' in the top-right corner.", "muted", 22);
-  printBlank();
-  printLine("Enter your name to begin.", "muted");
-  state.booting = false;
-  inputEl.disabled = false;
-  formEl.classList.remove("input--booting");
-  inputEl.focus();
+  try {
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) await runBootSequence();
+    yodaGuideEl.classList.remove("yoda-guide--booting");
+    setYodaImage("idle");
+    printLine("Lenny Bos portfolio · tty1", "muted");
+    void typeYodaSpeech("Please type your name in the terminal!");
+  } finally {
+    state.booting = false;
+    inputEl.disabled = false;
+    formEl.classList.remove("input--booting");
+    screenEl.closest(".terminal-stage").classList.remove("terminal-stage--booting");
+  }
+  if (document.activeElement === document.body && matchMedia("(pointer: fine)").matches) {
+    inputEl.focus({ preventScroll: true });
+  }
 }
 
 formEl.addEventListener("submit", (e) => {
@@ -1209,18 +1198,17 @@ formEl.addEventListener("submit", (e) => {
   if (!raw.trim()) return;
 
   if (!state.hasName) {
-    printLine(`Enter name: ${raw.trim()}`, "command");
+    printLine(`login: ${raw.trim()}`, "command");
     handlePreName(raw);
     return;
   }
 
   commandEcho(raw);
   runCommand(raw);
-  printBlank();
 });
 
 inputEl.addEventListener("keydown", (e) => {
-  if (e.key !== "Tab") return;
+  if (e.key !== "Tab" || e.shiftKey || !state.hasName || !inputEl.value.trim()) return;
   e.preventDefault();
   handleTabAutocomplete();
 });
@@ -1256,8 +1244,8 @@ document.querySelectorAll(".mobile-commands [data-command]").forEach((button) =>
   });
 });
 
-window.addEventListener("click", () => {
-  if (!state.booting) inputEl.focus();
+screenEl.addEventListener("click", (event) => {
+  if (!state.booting && event.target === screenEl) inputEl.focus({ preventScroll: true });
 });
 
 boot();
